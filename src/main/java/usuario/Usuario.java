@@ -6,6 +6,7 @@ public abstract class Usuario {
     protected String senha;
     protected String email;
     protected String telefone;
+    protected TipoUsuario tipo;
 
     public Usuario(String nome, String cpf, String senha, String email) {
         validarDados(nome, cpf, senha);
@@ -44,4 +45,6 @@ public abstract class Usuario {
 
     // Método abstrato
     public abstract String getTipoUsuario();
+
+    public TipoUsuario getTipo() {return this.tipo;}
 }

@@ -1,9 +1,9 @@
 package utilitarios;
 
 public class Data {
-    private int dia;
-    private int mes;
-    private int ano;
+    private final int dia;
+    private final int mes;
+    private final int ano;
 
     public Data(int dia, int mes, int ano) {
         if (isDataValida())
@@ -24,4 +24,12 @@ public class Data {
     public String toString() {
         return "%s/%s/%s".formatted(dia, mes, ano);
     }
+
+    public boolean equals(Data d){
+        return dia == d.dia && mes == d.mes && ano == d.ano;
+    }
+
+    public int getDia() {return dia;}
+    public int getMes() {return mes;}
+    public int getAno() {return ano;}
 }

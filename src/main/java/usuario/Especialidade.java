@@ -1,0 +1,5 @@
+package usuario;
+
+public enum Especialidade {
+    CARDIOLOGISTA, ENDOCRINOLOGISTA, DERMATOLOGISTA, NEUROLOGISTA, GERAL
+}

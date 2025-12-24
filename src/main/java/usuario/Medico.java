@@ -1,5 +1,6 @@
 package usuario;
 
+
 public class Medico extends Usuario {
     private String crm;
     private String especialidade;
@@ -14,6 +15,7 @@ public class Medico extends Usuario {
         this.crm = crm;
         this.especialidade = especialidade;
         this.ativo = true;
+        tipo = TipoUsuario.MEDICO;
     }
 
     public String getCrm() { return crm; }

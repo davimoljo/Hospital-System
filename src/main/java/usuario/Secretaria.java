@@ -8,6 +8,7 @@ public class Secretaria extends Usuario {
     public Secretaria(String nome, String cpf, String senha, String email, String matricula) {
         super(nome, cpf, senha, email);
         this.matricula = matricula;
+        tipo = TipoUsuario.SECRETARIA;
     }
 
     public String getMatricula() { return matricula; }
