@@ -1,6 +1,5 @@
 package sistema.documentos;
 
-import utilitarios.*;
 import usuario.*;
 
 public class Exame extends DocumentoMedico {
