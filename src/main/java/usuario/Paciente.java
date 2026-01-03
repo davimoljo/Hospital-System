@@ -6,6 +6,8 @@ package usuario;
 import sistema.Prontuario;
 import sistema.StatusDoenca;
 import excessoes.*;
+import sistema.Consulta;
+import java.util.*;
 
 public class Paciente extends Usuario {
     private String endereco;
@@ -20,11 +22,21 @@ public class Paciente extends Usuario {
         prontuario = null;
     }
 
-    public String getEndereco() { return endereco; }
-    public void setEndereco(String endereco) { this.endereco = endereco; }
+    public String getEndereco() {
+        return endereco;
+    }
 
-    public String getConvenio() { return convenio; }
-    public void setConvenio(String convenio) { this.convenio = convenio; }
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
+
+    public String getConvenio() {
+        return convenio;
+    }
+
+    public void setConvenio(String convenio) {
+        this.convenio = convenio;
+    }
 
     @Override
     public String getTipoUsuario() {
@@ -36,16 +48,19 @@ public class Paciente extends Usuario {
         return this.nome + " (Convênio: " + this.convenio + ")";
     }
 
-    public boolean definirProntuario(String doenca, StatusDoenca statusDoenca){
-        if (prontuario == null){
+    public boolean definirProntuario(String doenca, StatusDoenca statusDoenca) {
+        if (prontuario == null) {
             prontuario = new Prontuario(this, doenca, statusDoenca);
             return true;
-        }
-        else
+        } else
             return false;
     }
 
-    public  Prontuario getProntuario() {
+    public Prontuario getProntuario() {
         return prontuario;
+    }
+
+    public void agendarConsulta(){
+        
     }
 }

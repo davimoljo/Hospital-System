@@ -51,8 +51,8 @@
   "consultas": [
     {
       "id": "cons1",
-      "pacienteId": "pac1",
-      "medicoId": "med1",
+      "pacienteCPF": "pac1",
+      "medicoCRM": "med1",
       "marcacao": {
         "dia": 10,
         "mes": 1,
@@ -65,8 +65,8 @@
     },
     {
       "id": "cons2",
-      "pacienteId": "pac1",
-      "medicoId": "med1",
+      "pacienteCPF": "pac1",
+      "medicoCRM": "med1",
       "marcacao": {
         "dia": 20,
         "mes": 1,

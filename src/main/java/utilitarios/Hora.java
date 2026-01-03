@@ -6,7 +6,7 @@ public class Hora {
 
     public Hora(int hora, int minuto) {
         if (!horaValida(hora, minuto))
-                throw new IllegalArgumentException("Hora inválida");
+            throw new IllegalArgumentException("Hora inválida");
 
         this.hora = hora;
         this.minuto = minuto;
@@ -22,6 +22,14 @@ public class Hora {
     }
 
     public boolean equals(Hora h) {
-        return  hora == h.hora && minuto == h.minuto;
+        return hora == h.hora && minuto == h.minuto;
+    }
+
+    public int getHora() {
+        return hora;
+    }
+
+    public int getMinuto() {
+        return minuto;
     }
 }
