@@ -10,4 +10,16 @@
   "ativo" : true,
   "consultasMarcadas" : [ ],
   "tipoUsuario" : "MEDICO"
+}, {
+  "nome" : "Carlos",
+  "cpf" : "123432",
+  "senha" : "43221",
+  "email" : "carlos@gmail.com",
+  "telefone" : null,
+  "tipo" : "PACIENTE",
+  "endereco" : null,
+  "convenio" : "Unimed",
+  "prontuario" : null,
+  "consultasMarcadas" : [ ],
+  "tipoUsuario" : "PACIENTE"
 } ]

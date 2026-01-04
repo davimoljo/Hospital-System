@@ -23,6 +23,8 @@ public class Paciente extends Usuario {
         consultasMarcadas = new ArrayList<>();
     }
 
+    public Paciente(){}
+
     public String getEndereco() {
         return endereco;
     }

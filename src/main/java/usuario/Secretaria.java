@@ -13,6 +13,8 @@ public class Secretaria extends Usuario {
         tipo = TipoUsuario.SECRETARIA;
     }
 
+    public Secretaria(){}
+
     public String getMatricula() {
         return matricula;
     }
