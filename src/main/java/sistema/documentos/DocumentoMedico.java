@@ -1,8 +1,22 @@
 package sistema.documentos;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import usuario.Paciente;
 import utilitarios.Data;
 import usuario.Medico;
+
+
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME, // Identifica pelo nome
+        include = JsonTypeInfo.As.PROPERTY, // Inclui uma propriedade no JSON
+        property = "tipoDocumento" // Nome da propriedade que aparecerá no JSON
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Atestado.class, name = "atestado"),
+        @JsonSubTypes.Type(value = Receita.class, name = "receita"),
+        @JsonSubTypes.Type(value = Exame.class, name = "exame")
+})
 
 public abstract class DocumentoMedico {
     private String id;

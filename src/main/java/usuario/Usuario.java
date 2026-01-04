@@ -1,5 +1,19 @@
 package usuario;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "tipoUsuario" // O nome do campo que aparecerá no JSON
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Medico.class, name = "MEDICO"),
+        @JsonSubTypes.Type(value = Paciente.class, name = "PACIENTE"),
+        @JsonSubTypes.Type(value = Secretaria.class, name = "SECRETARIA")
+})
+
 public abstract class Usuario {
     protected String nome;
     protected String cpf;
@@ -15,6 +29,8 @@ public abstract class Usuario {
         this.senha = senha;
         this.email = email;
     }
+
+    public Usuario(){}
 
     private void validarDados(String nome, String cpf, String senha) {
         if (nome == null || nome.trim().length() <= 1) {
@@ -70,6 +86,10 @@ public abstract class Usuario {
 
     public TipoUsuario getTipo() {
         return this.tipo;
+    }
+
+    public boolean equals(Usuario usuario){
+        return this.getCpf().equals(usuario.getCpf());
     }
 
 }

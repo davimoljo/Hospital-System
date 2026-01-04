@@ -10,7 +10,7 @@ import java.util.List;
 
 import usuario.Usuario;
 
-public class RepositórioDeUsuario {
+public class RepositorioDeUsuario {
     private static final File FILE = new File("src/main/java/usuario/userDB/userDatabase.json");
     private static final ObjectMapper mapper = new ObjectMapper();
 

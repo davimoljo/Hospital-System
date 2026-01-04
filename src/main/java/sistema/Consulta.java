@@ -13,8 +13,8 @@ import utilitarios.Hora;
 
 public class Consulta {
     private Data marcacao;
-    private final Medico medico;
-    private final Paciente paciente;
+    private Medico medico;
+    private Paciente paciente;
     private Hora hora;
     private String id;
 
@@ -66,7 +66,7 @@ public class Consulta {
 
     public void registrarConsulta() {
         ObjectMapper mapper = new ObjectMapper();
-        File file = new File("src/main/java/usuario/userDB/userDatabase.json");
+        File file = new File("src/main/sistema/docsDB/consultaDB.json");
 
         ObjectNode root;
 
@@ -110,5 +110,12 @@ public class Consulta {
 
         consultas.add(novaConsulta);
 
+    }
+
+    protected void setMedico(Medico medico) {
+        this.medico = medico;
+    }
+    protected void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
     }
 }

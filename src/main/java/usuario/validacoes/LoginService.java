@@ -11,7 +11,8 @@ public class LoginService {
         for (Usuario u : usuarios) {
             if (u.getCpf().equals(cpf) && u.getSenha().equals(senha))
                 return u;
-            throw new SenhaIncorretaException("Erro! Senha incorreta.");
+            else if (u.getCpf().equals(cpf))
+                throw new SenhaIncorretaException("Erro! Senha inválida");
         }
         throw new UsuarioInexistente("Erro! Usuário inexistente.");
     }

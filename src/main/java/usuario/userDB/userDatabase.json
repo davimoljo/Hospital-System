@@ -1,82 +1,13 @@
-{
-  "usuarios": {
-    "pacientes": [
-      {
-        "id": "pac1",
-        "tipo": "PACIENTE",
-        "nome": "João Silva",
-        "cpf": "12345678900",
-        "senha": "1234",
-        "email": "joao@email.com",
-        "telefone": "31999999999",
-        "endereco": "Rua A, 123",
-        "convenio": "Unimed",
-        "prontuario": {
-          "doenca": "Gripe",
-          "statusDoenca": "EM_TRATAMENTO"
-        },
-        "consultas": ["cons1", "cons2"]
-      }
-    ],
-    "medicos": [
-      {
-        "id": "med1",
-        "tipo": "MEDICO",
-        "nome": "Dra. Maria Souza",
-        "cpf": "98765432100",
-        "senha": "abcd",
-        "email": "maria@hospital.com",
-        "telefone": "31988888888",
-        "crm": "CRM-MG-12345",
-        "especialidade": "Cardiologia",
-        "ativo": true,
-        "horaInicioExpediente": 8,
-        "horaFimExpediente": 17,
-        "consultas": ["cons1", "cons2"]
-      }
-    ],
-    "secretarias": [
-      {
-        "id": "sec1",
-        "tipo": "SECRETARIA",
-        "nome": "Ana Paula",
-        "cpf": "11122233344",
-        "senha": "senha123",
-        "email": "ana@hospital.com",
-        "telefone": "31977777777",
-        "matricula": "SEC-2024-01"
-      }
-    ]
-  },
-  "consultas": [
-    {
-      "id": "cons1",
-      "pacienteCPF": "pac1",
-      "medicoCRM": "med1",
-      "marcacao": {
-        "dia": 10,
-        "mes": 1,
-        "ano": 2026
-      },
-      "hora": {
-        "hora": 9,
-        "minuto": 30
-      }
-    },
-    {
-      "id": "cons2",
-      "pacienteCPF": "pac1",
-      "medicoCRM": "med1",
-      "marcacao": {
-        "dia": 20,
-        "mes": 1,
-        "ano": 2026
-      },
-      "hora": {
-        "hora": 14,
-        "minuto": 0
-      }
-    }
-  ]
-}
-    
+[ {
+  "nome" : "Buddy",
+  "cpf" : "234534",
+  "senha" : "234564",
+  "email" : "buddy.com@gmail.com",
+  "telefone" : null,
+  "tipo" : "MEDICO",
+  "crm" : "234345.7",
+  "especialidade" : "NEUROLOGISTA",
+  "ativo" : true,
+  "consultasMarcadas" : [ ],
+  "tipoUsuario" : "MEDICO"
+} ]

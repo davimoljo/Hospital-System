@@ -1,11 +1,14 @@
 package sistema;
 
 import excessoes.DataIndisponivel;
+import excessoes.MedicoDesativado;
 import excessoes.ProntuarioJaExistente;
+import excessoes.UsuarioJaExistente;
 import sistema.documentos.Atestado;
 import sistema.documentos.DocumentoMedico;
 import sistema.documentos.Receita;
 import usuario.*;
+import usuario.userDB.RepositorioDeUsuario;
 import utilitarios.*;
 import utilitarios.Medicamento;
 
@@ -18,8 +21,69 @@ public class Hospital {
     private List<Prontuario> prontuarios;
     private List<Consulta> consultasMarcadas;
 
-    public void cadastrarUsuario(Usuario usuario) {
+    public Hospital(){
+        usuarios = RepositorioDeUsuario.carregarUsuarios();
+        documentos = RegistraDocumento.leDocumentos();
+        prontuarios = RegistraDocumento.leProntuarios();
+        consultasMarcadas = RegistraDocumento.leConsultas();
+        for (Usuario u : usuarios) {
+            if (u instanceof Medico m){
+                m.getConsultasMarcadas().clear();
+            }
+            else if (u instanceof Paciente p){
+                p.getConsultasMarcadas().clear();
+            }
+        }
+
+        for (Consulta c : consultasMarcadas) {
+            Usuario medicoOficial = procurarUsuarioPorCPF(c.getMedicoResposavel().getCpf());
+            Usuario pacienteOficial = procurarUsuarioPorCPF(c.getPaciente().getCpf());
+            c.setMedico((Medico) medicoOficial);
+            c.setPaciente((Paciente) pacienteOficial);
+
+            ((Medico) medicoOficial).arquivarConsulta(c);
+            ((Paciente) pacienteOficial).agendarConsulta(c);
+        }
+    }
+
+    public void fechar(){
+        RegistraDocumento.registrarConsultas(consultasMarcadas);
+        RegistraDocumento.registrarDocumentos(documentos);
+        RegistraDocumento.registrarProntuarios(prontuarios);
+        RepositorioDeUsuario.registrarUsuarios(usuarios);
+    }
+
+    private void cadastrarUsuario(Usuario usuario) {
         usuarios.add(usuario);
+    }
+    private boolean usuarioExiste(String cpf) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getCpf().equals(cpf)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public void cadastrarMedico(String nome, String cpf, String senha, String email, String crm, Especialidade especialidade){
+        if(usuarioExiste(cpf)){
+            throw new UsuarioJaExistente("Usuário com cpf " + cpf +" já existe");
+        }
+        cadastrarUsuario(new Medico(nome, cpf, senha, email, crm, especialidade));
+    }
+
+    public void cadastrarPaciente(String nome, String cpf, String senha, String email, String convenio){
+        if (usuarioExiste(cpf)){
+            throw new UsuarioJaExistente("Usuário com cpf " + cpf +" já existe");
+        }
+        cadastrarUsuario(new Paciente(nome, cpf, senha, email, convenio));
+    }
+
+    public void cadastrarSecretaria(String nome, String cpf, String senha, String email, String matricula){
+        if (usuarioExiste(cpf)){
+            throw new UsuarioJaExistente("Usuário com cpf " + cpf +" já existe");
+        }
+        cadastrarUsuario(new Secretaria(nome, cpf, senha, email, matricula));
     }
 
     public List<Usuario> procurarUsuariosPorCPF(String cpf) {
@@ -31,6 +95,15 @@ public class Hospital {
         }
 
         return achados;
+    }
+
+    public Usuario procurarUsuarioPorCPF(String cpf) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getCpf().equals(cpf)) {
+                return usuario;
+            }
+        }
+        return null;
     }
 
     public DocumentoMedico gerarAtestado(Paciente p, Medico m, Data termino) {
@@ -45,67 +118,47 @@ public class Hospital {
         return receita;
     }
 
-    public Consulta marcarConsulta(Paciente p, Medico m, Data marcacao, Hora hora) throws DataIndisponivel {
+    public Consulta marcarConsulta(Paciente p, Medico m, Data marcacao, Hora hora) throws DataIndisponivel, MedicoDesativado{
 
-        for (Consulta consulta : consultasMarcadas) {
-            if (consulta.getHora().equals(hora) && consulta.getMarcacao().equals(marcacao)
-                    && consulta.getMedicoResposavel().equals(m)) {
+        if (!m.isAtivo())
+            throw new MedicoDesativado("O doutor " + m.getNome() + " não está mais disponível");
+
+        if (!m.dentroDoExpediente(hora))
+            throw new DataIndisponivel();
+
+        for (Consulta consulta : m.getConsultasMarcadas()) {
+            if ((consulta.getHora().equals(hora) && consulta.getMarcacao().equals(marcacao)
+                    && consulta.getMedicoResposavel().equals(m))){
                 throw new DataIndisponivel();
             }
         }
 
         Consulta consulta = new Consulta(p, m, marcacao, hora);
         consultasMarcadas.add(consulta);
+        m.arquivarConsulta(consulta);
+        p.agendarConsulta(consulta);
         return consulta;
     }
 
-    public void organizarConsultasPorData() {
-        for (int i = consultasMarcadas.size() - 1; i > 0; i--) {
-            for (int j = 0; j < i; j++) {
-
-                Consulta c1 = consultasMarcadas.get(j);
-                Consulta c2 = consultasMarcadas.get(j + 1);
-
-                int ano1 = c1.getMarcacao().getAno();
-                int ano2 = c2.getMarcacao().getAno();
-
-                int mes1 = c1.getMarcacao().getMes();
-                int mes2 = c2.getMarcacao().getMes();
-
-                int dia1 = c1.getMarcacao().getDia();
-                int dia2 = c2.getMarcacao().getDia();
-
-                boolean trocar = false;
-
-                if (ano1 > ano2) {
-                    trocar = true;
-                } else if (ano1 == ano2 && mes1 > mes2) {
-                    trocar = true;
-                } else if (ano1 == ano2 && mes1 == mes2 && dia1 > dia2) {
-                    trocar = true;
-                }
-
-                if (trocar) {
-                    Consulta holder = consultasMarcadas.get(j);
-                    consultasMarcadas.set(j, consultasMarcadas.get(j + 1));
-                    consultasMarcadas.set(j + 1, holder);
-                }
-            }
-        }
+    public void organizarConsultasPorData(List<Consulta> consultas) {
+        consultas.sort((c1, c2) -> c1.getMarcacao().compareTo(c2.getMarcacao()));
     }
 
-    public void organizarConsultasPorMedicos() {
-        for (int i = 0; i < consultasMarcadas.size() - 1; i++) {
-            for (int j = 0; j < consultasMarcadas.size() - i - 1; j++) {
-                if (consultasMarcadas.get(j).getMedicoResposavel().getNome()
-                        .compareTo(consultasMarcadas.get(j + 1).getMedicoResposavel().getNome()) > 0) {
-                    Consulta holder = consultasMarcadas.get(j);
-                    consultasMarcadas.set(j, consultasMarcadas.get(j + 1));
-                    consultasMarcadas.set(j + 1, holder);
-                }
+    public void organizarConsultasPorMedicos(List<Consulta> consultas) {
+        consultas.sort((c1, c2) -> c1.getMedicoResposavel().getNome().compareTo(c2.getMedicoResposavel().getNome()));
+    }
+
+    public List<Consulta> filtrarConsultasPorUsuario(Usuario usuario) {
+        List<Consulta> consultas = new ArrayList<>();
+        for (Consulta consulta : consultasMarcadas) {
+            if (usuario.equals(consulta.getMedicoResposavel()) || usuario.equals(consulta.getPaciente())) {
+                consultas.add(consulta);
             }
         }
+
+        return  consultas;
     }
+
 
     public Prontuario gerarProntuario(Paciente paciente, String doenca, StatusDoenca statusDoenca) {
         if (!paciente.definirProntuario(doenca, statusDoenca)) {
@@ -113,5 +166,9 @@ public class Hospital {
         }
         prontuarios.add(paciente.getProntuario());
         return paciente.getProntuario();
+    }
+
+    public String getNomeHospital() {
+        return nomeHospital;
     }
 }

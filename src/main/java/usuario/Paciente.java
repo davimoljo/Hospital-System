@@ -13,13 +13,14 @@ public class Paciente extends Usuario {
     private String endereco;
     private String convenio;
     private Prontuario prontuario;
+    private List<Consulta> consultasMarcadas;
 
-    public Paciente(String nome, String cpf, String senha, String email, String endereco, String convenio) {
+    public Paciente(String nome, String cpf, String senha, String email, String convenio) {
         super(nome, cpf, senha, email);
-        this.endereco = endereco;
         this.convenio = convenio;
         tipo = TipoUsuario.PACIENTE;
         prontuario = null;
+        consultasMarcadas = new ArrayList<>();
     }
 
     public String getEndereco() {
@@ -60,7 +61,10 @@ public class Paciente extends Usuario {
         return prontuario;
     }
 
-    public void agendarConsulta(){
-        
+    public void agendarConsulta(Consulta consulta) {
+        consultasMarcadas.add(consulta);
     }
+
+    public List<Consulta> getConsultasMarcadas(){return consultasMarcadas;}
+
 }
