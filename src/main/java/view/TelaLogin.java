@@ -14,6 +14,8 @@ public class TelaLogin extends JFrame {
     private JButton botaoLogin;
     private JButton botaoNovoUsuario;
     private Hospital hospital;
+    private String cpfDigitado;
+    private String senhaDigitada;
 
     public TelaLogin(Hospital hospital) {
         this.hospital = hospital;
@@ -56,7 +58,18 @@ public class TelaLogin extends JFrame {
         add(painelCampos, BorderLayout.NORTH);
         add(painelBotao, BorderLayout.SOUTH);
 
-        botaoLogin.addActionListener(new Logar());
+        cpfDigitado = campoCPF.getText();
+        senhaDigitada = new String(campoSenha.getPassword());
+
+        botaoLogin.addActionListener(new Logar(this));
         botaoNovoUsuario.addActionListener(new abrirTelaCadastro(this, this.hospital));
     };
+
+    public String getCPFDigitado() {
+        return cpfDigitado;
+    }
+
+    public String getSenhaDigitada() {
+        return senhaDigitada;
+    }
 }
