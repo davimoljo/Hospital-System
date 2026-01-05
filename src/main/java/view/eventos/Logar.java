@@ -5,24 +5,29 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
-import usuario.Usuario;
+import excessoes.SenhaIncorretaException;
+import excessoes.UsuarioInexistente;
+import excessoes.UsuarioJaExistente;
+import sistema.Hospital;
+import usuario.*;
 import usuario.validacoes.*;
 import view.TelaLogin;
 
 public class Logar implements ActionListener {
     private TelaLogin tela;
-    private String cpfRecebido;
-    private String senhaRecebida;
 
-    public Logar(TelaLogin tela) {
+    private Hospital hospital;
+
+    public Logar(TelaLogin tela, Hospital hospital) {
         this.tela = tela;
-        cpfRecebido = tela.getCPFDigitado();
-        senhaRecebida = tela.getSenhaDigitada();
+        this.hospital = hospital;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (cpfRecebido.length() == 0 && senhaRecebida.length() == 0) {
+        String cpfRecebido = tela.getCPFDigitado();
+        String senhaRecebida = tela.getSenhaDigitada();
+        if (cpfRecebido.isEmpty() && senhaRecebida.isEmpty()) {
             JOptionPane.showMessageDialog(
                     tela,
                     "CPF e Senha devem ser preenchidos!",
@@ -36,13 +41,28 @@ public class Logar implements ActionListener {
                     JOptionPane.WARNING_MESSAGE);
         } else {
             try {
-                Usuario usuarioLogado = LoginService.validarUsuario(null, cpfRecebido, senhaRecebida); // TODO: Colocar
+                Usuario usuarioLogado = LoginService.validarUsuario(hospital.getUsuarios(), cpfRecebido, senhaRecebida); // TODO: Colocar
                                                                                                        // a lista de
                                                                                                        // usuarios nessa
                                                                                                        // função
                 JOptionPane.showMessageDialog(tela, "Bem-vindo(a), " + usuarioLogado.getNome());
-            } catch (Exception exc) {
-                // TODO: handle exception
+                if (usuarioLogado instanceof Medico medico){
+                    //TODO: Criar tela do medico
+                }
+                else if (usuarioLogado instanceof Paciente paciente){
+                    //TODO: Criar tela do paciente
+                }
+
+                else if (usuarioLogado instanceof Secretaria secretaria){
+                    //TODO: Criar tela da secretaria
+                }
+
+
+            } catch (SenhaIncorretaException error) {
+                JOptionPane.showMessageDialog(tela, "Senha incorreta!","Erro de autenticação", JOptionPane.WARNING_MESSAGE);
+
+            } catch (UsuarioInexistente error){
+                JOptionPane.showMessageDialog(tela, "CPF fornecido não corresponde a nenhum usuário", "Erro de autenticação", JOptionPane.WARNING_MESSAGE);
             }
         }
     }

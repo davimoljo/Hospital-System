@@ -171,4 +171,6 @@ public class Hospital {
     public String getNomeHospital() {
         return nomeHospital;
     }
+
+    public List<Usuario> getUsuarios() {return  usuarios;}
 }

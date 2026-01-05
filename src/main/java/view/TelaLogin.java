@@ -10,12 +10,10 @@ import java.awt.event.*;
 
 public class TelaLogin extends JFrame {
     private JTextField campoCPF;
-    private JPasswordField campoSenha;
+    private JTextField campoSenha;
     private JButton botaoLogin;
     private JButton botaoNovoUsuario;
     private Hospital hospital;
-    private String cpfDigitado;
-    private String senhaDigitada;
 
     public TelaLogin(Hospital hospital) {
         this.hospital = hospital;
@@ -58,18 +56,15 @@ public class TelaLogin extends JFrame {
         add(painelCampos, BorderLayout.NORTH);
         add(painelBotao, BorderLayout.SOUTH);
 
-        cpfDigitado = campoCPF.getText();
-        senhaDigitada = new String(campoSenha.getPassword());
-
-        botaoLogin.addActionListener(new Logar(this));
+        botaoLogin.addActionListener(new Logar(this, hospital));
         botaoNovoUsuario.addActionListener(new abrirTelaCadastro(this, this.hospital));
     };
 
     public String getCPFDigitado() {
-        return cpfDigitado;
+        return campoCPF.getText();
     }
 
     public String getSenhaDigitada() {
-        return senhaDigitada;
+        return campoSenha.getText();
     }
 }

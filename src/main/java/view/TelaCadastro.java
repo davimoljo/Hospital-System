@@ -39,9 +39,14 @@ public class TelaCadastro extends JFrame {
             String email = txtEmail.getText();
 
             if (nome.isEmpty() || cpf.isEmpty() || senha.isEmpty() || email.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
                 return;
-            }try {
+            }
+            if (senha.length() <= 3 || cpf.length() != 11) {
+                JOptionPane.showMessageDialog(this, "Senha deve ter no mínimo 4 digitos e CPF deve ter 11 dígitos!");
+                return;
+            }
+            try {
                 if (tipoSelecionado.equals(TipoUsuario.MEDICO)) {
                     String crm = txtCRM.getText();
                     if (crm.isEmpty()) {
@@ -160,5 +165,13 @@ public class TelaCadastro extends JFrame {
         painelFormulario.revalidate();
         painelFormulario.repaint();
     }
+
+    protected String getNome() {
+        return txtNome.getText();
+    }
+    protected String getCPF() {
+        return txtCPF.getText();
+    }
+
 
 }
