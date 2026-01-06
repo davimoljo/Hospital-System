@@ -1,17 +1,23 @@
-package view.telasDeUsuario;
+package view.telasDeUsuario.medico;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import sistema.Consulta;
+import sistema.Prontuario;
 
 import java.awt.*;
 import java.awt.event.*;
 
 import usuario.Medico;
+import usuario.Paciente;
+
+import java.util.List;
 
 public class TelaMedico extends JFrame {
     private Medico medico;
+    private JTable tabelaAgenda;
+    private List<Consulta> consultas;
 
     public TelaMedico(Medico medico) {
         this.medico = medico;
@@ -41,7 +47,7 @@ public class TelaMedico extends JFrame {
         JPanel abaAgenda = new JPanel(new BorderLayout());
         DefaultTableModel modelAgenda = new DefaultTableModel(
                 new String[] { "Hora", "Paciente" }, 0);
-        JTable tabelaAgenda = new JTable(modelAgenda);
+        tabelaAgenda = new JTable(modelAgenda);
 
         for (Consulta c : medico.getConsultasMarcadas()) {
             modelAgenda.addRow(new Object[] {
@@ -105,6 +111,17 @@ public class TelaMedico extends JFrame {
                 btnInternacao.setEnabled(selecionado);
                 btnAtestado.setEnabled(selecionado);
                 btnReceita.setEnabled(selecionado);
+            }
+        });
+
+        btnProntuario.addActionListener(e -> {
+
+            int linha = tabelaAgenda.getSelectedRow();
+
+            if (linha != -1) {
+                Consulta consulta = consultas.get(linha);
+                Paciente paciente = consulta.getPaciente();
+
             }
         });
 

@@ -41,28 +41,26 @@ public class Logar implements ActionListener {
                     JOptionPane.WARNING_MESSAGE);
         } else {
             try {
-                Usuario usuarioLogado = LoginService.validarUsuario(hospital.getUsuarios(), cpfRecebido, senhaRecebida); // TODO: Colocar
-                                                                                                       // a lista de
-                                                                                                       // usuarios nessa
-                                                                                                       // função
+                Usuario usuarioLogado = LoginService.validarUsuario(hospital.getUsuarios(), cpfRecebido, senhaRecebida);
+
                 JOptionPane.showMessageDialog(tela, "Bem-vindo(a), " + usuarioLogado.getNome());
-                if (usuarioLogado instanceof Medico medico){
-                    //TODO: Criar tela do medico
-                }
-                else if (usuarioLogado instanceof Paciente paciente){
-                    //TODO: Criar tela do paciente
-                }
-
-                else if (usuarioLogado instanceof Secretaria secretaria){
-                    //TODO: Criar tela da secretaria
+                if (usuarioLogado instanceof Medico medico) {
+                    // TODO: Criar tela do medico
+                } else if (usuarioLogado instanceof Paciente paciente) {
+                    // TODO: Criar tela do paciente
                 }
 
+                else if (usuarioLogado instanceof Secretaria secretaria) {
+                    // TODO: Criar tela da secretaria
+                }
 
             } catch (SenhaIncorretaException error) {
-                JOptionPane.showMessageDialog(tela, "Senha incorreta!","Erro de autenticação", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(tela, "Senha incorreta!", "Erro de autenticação",
+                        JOptionPane.WARNING_MESSAGE);
 
-            } catch (UsuarioInexistente error){
-                JOptionPane.showMessageDialog(tela, "CPF fornecido não corresponde a nenhum usuário", "Erro de autenticação", JOptionPane.WARNING_MESSAGE);
+            } catch (UsuarioInexistente error) {
+                JOptionPane.showMessageDialog(tela, "CPF fornecido não corresponde a nenhum usuário",
+                        "Erro de autenticação", JOptionPane.WARNING_MESSAGE);
             }
         }
     }
