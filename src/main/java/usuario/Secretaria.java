@@ -1,6 +1,7 @@
 package usuario;
 
 import sistema.Consulta;
+import sistema.Hospital;
 import utilitarios.*;
 // MANTENHA O SEU PACKAGE AQUI
 
@@ -12,8 +13,6 @@ public class Secretaria extends Usuario {
         this.matricula = matricula;
         tipo = TipoUsuario.SECRETARIA;
     }
-
-    public Secretaria(){}
 
     public String getMatricula() {
         return matricula;
@@ -28,8 +27,8 @@ public class Secretaria extends Usuario {
         return "SECRETARIA";
     }
 
-    public void marcarConsulta(Paciente p, Medico m, Data d, Hora h) {
-        Consulta c = new Consulta(p, m, d, h);
-        c.registrarConsulta();
+    public void marcarConsulta(Hospital hospital, Paciente p, Medico m, Data d, Hora h) {
+        // Delega para o hospital, que é quem sabe as regras de agendamento
+        hospital.marcarConsulta(p, m, d, h);
     }
 }
