@@ -17,6 +17,7 @@ public class Consulta {
     private Paciente paciente;
     private Hora hora;
     private String id;
+    private Prontuario prontuario;
 
     public Consulta(Paciente paciente, Medico medico, Data marcacao, Hora hora) {
         id = paciente.getNome() + marcacao.getDia() + marcacao.getMes() + marcacao.getAno();
@@ -115,7 +116,14 @@ public class Consulta {
     protected void setMedico(Medico medico) {
         this.medico = medico;
     }
+
     protected void setPaciente(Paciente paciente) {
         this.paciente = paciente;
+    }
+
+    public Prontuario gerarProntuario(String doenca, StatusDoenca status) {
+        Prontuario prontuarioGerado = new Prontuario(paciente, doenca, status);
+        prontuario = prontuarioGerado;
+        return prontuarioGerado;
     }
 }

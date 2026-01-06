@@ -23,7 +23,8 @@ public class Paciente extends Usuario {
         consultasMarcadas = new ArrayList<>();
     }
 
-    public Paciente(){}
+    public Paciente() {
+    }
 
     public String getEndereco() {
         return endereco;
@@ -67,6 +68,8 @@ public class Paciente extends Usuario {
         consultasMarcadas.add(consulta);
     }
 
-    public List<Consulta> getConsultasMarcadas(){return consultasMarcadas;}
+    public List<Consulta> getConsultasMarcadas() {
+        return consultasMarcadas;
+    }
 
 }

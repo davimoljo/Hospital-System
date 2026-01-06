@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 import sistema.Consulta;
 import sistema.Prontuario;
+import sistema.StatusDoenca;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -18,9 +19,12 @@ public class TelaMedico extends JFrame {
     private Medico medico;
     private JTable tabelaAgenda;
     private List<Consulta> consultas;
+    private JTextField campoDoencaProntuario;
+    private ButtonGroup statusProntuario;
 
     public TelaMedico(Medico medico) {
         this.medico = medico;
+        consultas = medico.getConsultasMarcadas();
         setTitle("Sistema hospitalar - Médico");
         setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,6 +63,7 @@ public class TelaMedico extends JFrame {
         JButton btnConfigAgenda = new JButton("Configurar agenda");
         btnConfigAgenda.setFocusPainted(false);
         abaAgenda.add(btnConfigAgenda, BorderLayout.SOUTH);
+        abaAgenda.add(new JScrollPane(tabelaAgenda), BorderLayout.CENTER);
 
         // ---- ABA PACIENTE ----
         JPanel abaPaciente = new JPanel();
@@ -86,6 +91,7 @@ public class TelaMedico extends JFrame {
 
         JButton btnAtestado = new JButton("Emitir atestado");
         JButton btnReceita = new JButton("Emitir receita");
+        JButton btnExame = new JButton("Emitir resultado de exame");
 
         btnAtestado.setEnabled(false);
         btnReceita.setEnabled(false);
@@ -111,17 +117,57 @@ public class TelaMedico extends JFrame {
                 btnInternacao.setEnabled(selecionado);
                 btnAtestado.setEnabled(selecionado);
                 btnReceita.setEnabled(selecionado);
+                btnExame.setEnabled(selecionado);
             }
         });
 
+        int linha = tabelaAgenda.getSelectedRow();
+
+        // View - Prontuario
+
         btnProntuario.addActionListener(e -> {
 
-            int linha = tabelaAgenda.getSelectedRow();
-
             if (linha != -1) {
+                JPanel painelProntuario = new JPanel(new GridLayout(0, 1));
+
                 Consulta consulta = consultas.get(linha);
                 Paciente paciente = consulta.getPaciente();
 
+                campoDoencaProntuario = new JTextField();
+                statusProntuario = new ButtonGroup();
+
+                painelProntuario.add(new JLabel("Doença: "));
+                painelProntuario.add(campoDoencaProntuario);
+
+                painelProntuario.add(new JLabel("Status: "));
+                for (StatusDoenca status : StatusDoenca.values()) {
+                    JRadioButton botao = new JRadioButton(status.name());
+                    botao.setActionCommand(status.name());
+                    statusProntuario.add(botao);
+                    painelProntuario.add(botao);
+                }
+
+                int result = JOptionPane.showConfirmDialog(
+                        this,
+                        painelProntuario,
+                        "Prontuário do paciente",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE);
+
+                if (result == JOptionPane.OK_OPTION) {
+                    StatusDoenca status = StatusDoenca.valueOf(statusProntuario.getSelection().getActionCommand());
+                    consulta.gerarProntuario(campoDoencaProntuario.getText(), status);
+                }
+
+            }
+
+        });
+
+        // View - Histórico
+        btnHistorico.addActionListener(e -> {
+            if (linha != -1) {
+                JPanel painelHistorico = new JPanel(new GridLayout(0, 1));
+                // TODO: continuar botão histórico
             }
         });
 
