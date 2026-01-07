@@ -126,4 +126,8 @@ public class Consulta {
         prontuario = prontuarioGerado;
         return prontuarioGerado;
     }
+
+    public Prontuario getProntuario() {
+        return prontuario;
+    }
 }

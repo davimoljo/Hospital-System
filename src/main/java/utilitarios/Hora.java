@@ -1,6 +1,6 @@
 package utilitarios;
 
-public class Hora {
+public class Hora implements Comparable<Hora> {
     private final int hora;
     private final int minuto;
 
@@ -16,13 +16,38 @@ public class Hora {
         return hora >= 0 && hora <= 23 && minuto >= 0 && minuto <= 59;
     }
 
-    @Override
-    public String toString() {
-        return hora + ":" + minuto;
+    public Hora adicionarMinutos(int minutos) {
+        int totalMinutos = hora * 60 + minuto + minutos;
+
+        if (totalMinutos < 0 || totalMinutos >= 24 * 60)
+            throw new IllegalArgumentException("Hora resultante inválida");
+
+        int novaHora = totalMinutos / 60;
+        int novoMinuto = totalMinutos % 60;
+
+        return new Hora(novaHora, novoMinuto);
     }
 
-    public boolean equals(Hora h) {
+    @Override
+    public int compareTo(Hora outra) {
+        if (this.hora != outra.hora)
+            return Integer.compare(this.hora, outra.hora);
+
+        return Integer.compare(this.minuto, outra.minuto);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Hora))
+            return false;
+
+        Hora h = (Hora) obj;
         return hora == h.hora && minuto == h.minuto;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%02d:%02d", hora, minuto);
     }
 
     public int getHora() {
