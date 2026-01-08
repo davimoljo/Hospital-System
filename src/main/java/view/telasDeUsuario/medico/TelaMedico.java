@@ -15,24 +15,35 @@ import java.awt.*;
 import usuario.Medico;
 import usuario.Paciente;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import utilitarios.Data;
 import utilitarios.Medicamento;
+import view.TelaLogin;
 
 public class TelaMedico extends JFrame {
 
     private Medico medico;
     private JTable tabelaAgenda;
     private List<Consulta> consultas;
+    private JFrame telaLogin;
 
-    public TelaMedico(Medico medico) {
+    public TelaMedico(Medico medico, JFrame telaLogin) {
         this.medico = medico;
         this.consultas = medico.getConsultasMarcadas();
+        this.telaLogin = telaLogin;
 
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                telaLogin.setVisible(true);
+            }
+        });
         setTitle("Sistema hospitalar - Médico");
         setSize(1100, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -62,7 +73,7 @@ public class TelaMedico extends JFrame {
         for (Consulta c : consultas) {
             modelAgenda.addRow(new Object[] {
                     c.getHora().toString(),
-                    c.getPaciente().getNome()
+                    c.getNomePaciente()
             });
         }
 

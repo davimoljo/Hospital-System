@@ -12,7 +12,7 @@ import sistema.Hospital;
 import usuario.*;
 import usuario.validacoes.*;
 import view.*;
-import view.telasDeUsuario.TelaMedico;
+import view.telasDeUsuario.medico.TelaMedico;
 import view.telasDeUsuario.TelaPaciente;
 
 public class Logar implements ActionListener {
