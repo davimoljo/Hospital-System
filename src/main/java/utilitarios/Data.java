@@ -38,8 +38,12 @@ public class Data {
     public int getAno() {return ano;}
 
     public int compareTo(Data outra) {
-        if (this.ano != outra.ano) return Integer.compare(this.ano, outra.ano);
-        if (this.mes != outra.mes) return Integer.compare(this.mes, outra.mes);
-        return Integer.compare(this.dia, outra.dia);
+        if (this.ano != outra.ano)
+            return this.ano - outra.ano;
+        if (this.mes != outra.mes)
+            return this.mes - outra.mes;
+        return this.dia - outra.dia;
     }
+
+
 }

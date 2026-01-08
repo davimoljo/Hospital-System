@@ -3,7 +3,7 @@ package usuario;
 import sistema.Consulta;
 import sistema.Hospital;
 import utilitarios.*;
-// MANTENHA O SEU PACKAGE AQUI
+
 
 public class Secretaria extends Usuario {
     private String matricula;

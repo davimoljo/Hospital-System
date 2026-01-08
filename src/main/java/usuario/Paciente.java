@@ -14,6 +14,8 @@ public class Paciente extends Usuario {
     private String convenio;
     private Prontuario prontuario;
     private List<Consulta> consultasMarcadas;
+    private boolean internado;
+    private boolean aptoAVisitas;
 
     public Paciente(String nome, String cpf, String senha, String email, String convenio) {
         super(nome, cpf, senha, email);
@@ -21,9 +23,12 @@ public class Paciente extends Usuario {
         tipo = TipoUsuario.PACIENTE;
         prontuario = null;
         consultasMarcadas = new ArrayList<>();
+        internado = false;
+        aptoAVisitas = false;
     }
 
-    public Paciente(){}
+    public Paciente() {
+    }
 
     public String getEndereco() {
         return endereco;
@@ -67,6 +72,23 @@ public class Paciente extends Usuario {
         consultasMarcadas.add(consulta);
     }
 
-    public List<Consulta> getConsultasMarcadas(){return consultasMarcadas;}
+    public List<Consulta> getConsultasMarcadas() {
+        return consultasMarcadas;
+    }
 
+    public boolean isInternado() {
+        return internado;
+    }
+
+    public void alternarEstadoDeInternacao() {
+        internado = !internado;
+    }
+
+    public void alternarVisita() {
+        aptoAVisitas = !aptoAVisitas;
+    }
+
+    public boolean isAptoAVisitas() {
+        return aptoAVisitas;
+    }
 }

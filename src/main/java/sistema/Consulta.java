@@ -16,6 +16,7 @@ public class Consulta {
     private Data marcacao;
     private Hora hora;
     private String id;
+    private Prontuario prontuario;
     private String nomePaciente;
     private String nomeMedico;
     private String cpfPaciente;
@@ -80,11 +81,19 @@ public class Consulta {
         this.cpfMedicoResponsavel = medico.getCpf();
         this.nomeMedico = medico.getNome();
     }
-    @JsonIgnore
+
     protected void setPaciente(Paciente paciente) {
         this.cpfPaciente = paciente.getCpf();
         this.nomePaciente = paciente.getNome();
     }
 
+    public Prontuario gerarProntuario(String doenca, StatusDoenca status) {
+        Prontuario prontuarioGerado = new Prontuario(paciente, doenca, status);
+        prontuario = prontuarioGerado;
+        return prontuarioGerado;
+    }
 
+    public Prontuario getProntuario() {
+        return prontuario;
+    }
 }
