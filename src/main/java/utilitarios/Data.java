@@ -1,22 +1,26 @@
 package utilitarios;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import excessoes.DataInvalida;
+
 public class Data {
-    private final int dia;
-    private final int mes;
-    private final int ano;
+    private int dia;
+    private int mes;
+    private int ano;
 
     public Data(int dia, int mes, int ano) {
-        if (isDataValida())
-            throw new IllegalArgumentException("Erro: Data inválida");
         this.dia = dia;
         this.mes = mes;
         this.ano = ano;
+        if (!isDataValida())
+            throw new DataInvalida("Erro: Data inválida");
     }
 
+    public Data(){}
+
+    @JsonIgnore
     public boolean isDataValida() {
-        if (dia < 1 || dia > 31 || mes > 12 || mes < 1)
-            return true;
-        return false;
+        return dia >= 1 && dia <= 31 && mes <= 12 && mes >= 1;
 
     }
 

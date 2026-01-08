@@ -34,6 +34,7 @@ public class SecretariaService {
 
             // 4. Mandar o Hospital marcar (valida disponibilidade)
             hospital.marcarConsulta(paciente, medico, data, hora);
+            //TODO: Tratar excessões
 
             return "Sucesso! Consulta agendada para " + data + " às " + hora + " com Dr. " + medico.getNome();
 
@@ -52,8 +53,7 @@ public class SecretariaService {
 
     private static Medico buscarMedicoPorCrm(Hospital hospital, String crm) {
         for (Usuario u : hospital.getUsuarios()) {
-            if (u instanceof Medico) {
-                Medico m = (Medico) u;
+            if (u instanceof Medico m) {
                 if (m.getCrm().equals(crm)) {
                     return m;
                 }

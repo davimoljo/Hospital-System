@@ -8,6 +8,7 @@ import usuario.Paciente;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RegistraDocumento {
@@ -78,15 +79,22 @@ public class RegistraDocumento {
     }
 
     public static List<Consulta> leConsultas(){
-        return lerEntidades("docsDB/consultas.json", new TypeReference<List<Consulta>>() {});
+        try {
+            return lerEntidades("src/main/java/sistema/docsDB/consultaDB.json", new TypeReference<List<Consulta>>() {
+            });
+        }catch (RuntimeException e){
+            System.out.println("Erro ao ler o arquivo de consultas: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+            System.exit(1);
+        }
+        return null;
     }
 
     public static List<Prontuario> leProntuarios(){
-        return lerEntidades("docsDB/prontuario.json", new TypeReference<List<Prontuario>>() {});
+        return lerEntidades("src/main/java/sistema/docsDB/prontuarioDB.json", new TypeReference<List<Prontuario>>() {});
     }
 
     public static List<DocumentoMedico> leDocumentos(){
-        return lerEntidades("docsDB/documentos.json", new TypeReference<List<DocumentoMedico>>() {});
+        return lerEntidades("src/main/java/sistema/docsDB/documentosDB.json", new TypeReference<List<DocumentoMedico>>() {});
     }
 
 }

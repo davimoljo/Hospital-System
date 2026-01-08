@@ -1,15 +1,27 @@
 package utilitarios;
 
+import excessoes.HoraInvalida;
+
 public class Hora {
-    private final int hora;
-    private final int minuto;
+    private int hora;
+    private int minuto;
 
     public Hora(int hora, int minuto) {
         if (!horaValida(hora, minuto))
-            throw new IllegalArgumentException("Hora inválida");
+            throw new HoraInvalida("Hora inválida");
 
         this.hora = hora;
         this.minuto = minuto;
+    }
+
+    public Hora(){}
+
+    public Hora (String hora, String minuto) {
+        this.hora = (int) Integer.parseInt(hora);
+        this.minuto = (int) Integer.parseInt(minuto);
+        if (!horaValida(this.hora, this.minuto)){
+            throw new HoraInvalida("Hora inválida");
+        }
     }
 
     public boolean horaValida(int hora, int minuto) {
@@ -18,6 +30,9 @@ public class Hora {
 
     @Override
     public String toString() {
+        if (minuto < 10)
+            return hora + ":0" + minuto;
+
         return hora + ":" + minuto;
     }
 

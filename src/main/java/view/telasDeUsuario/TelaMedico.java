@@ -9,15 +9,16 @@ import java.awt.*;
 import java.awt.event.*;
 
 import usuario.Medico;
+import view.TelaLogin;
 
 public class TelaMedico extends JFrame {
     private Medico medico;
 
-    public TelaMedico(Medico medico) {
+    public TelaMedico(Medico medico, TelaLogin telaLogin) {
         this.medico = medico;
         setTitle("Sistema hospitalar - Médico");
         setSize(1100, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -46,9 +47,17 @@ public class TelaMedico extends JFrame {
         for (Consulta c : medico.getConsultasMarcadas()) {
             modelAgenda.addRow(new Object[] {
                     c.getHora().toString(),
-                    c.getPaciente().getNome()
+                    c.getNomePaciente()
             });
         }
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                // Quando esta tela fechar, a de login reaparece
+                telaLogin.setVisible(true);
+            }
+        });
 
         JButton btnConfigAgenda = new JButton("Configurar agenda");
         btnConfigAgenda.setFocusPainted(false);

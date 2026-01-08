@@ -36,8 +36,8 @@ public class Hospital {
         }
 
         for (Consulta c : consultasMarcadas) {
-            Usuario medicoOficial = procurarUsuarioPorCPF(c.getMedicoResposavel().getCpf());
-            Usuario pacienteOficial = procurarUsuarioPorCPF(c.getPaciente().getCpf());
+            Usuario medicoOficial = procurarUsuarioPorCPF(c.getCpfMedicoResponsavel());
+            Usuario pacienteOficial = procurarUsuarioPorCPF(c.getCpfPaciente());
             c.setMedico((Medico) medicoOficial);
             c.setPaciente((Paciente) pacienteOficial);
 
@@ -65,11 +65,11 @@ public class Hospital {
 
         return false;
     }
-    public void cadastrarMedico(String nome, String cpf, String senha, String email, String crm, Especialidade especialidade){
+    public void cadastrarMedico(String nome, String cpf, String senha, String email, String crm, Especialidade especialidade, Hora inicioExpediente, Hora fimExpediente) {
         if(usuarioExiste(cpf)){
             throw new UsuarioJaExistente("Usuário com cpf " + cpf +" já existe");
         }
-        cadastrarUsuario(new Medico(nome, cpf, senha, email, crm, especialidade));
+        cadastrarUsuario(new Medico(nome, cpf, senha, email, crm, especialidade, inicioExpediente, fimExpediente));
     }
 
     public void cadastrarPaciente(String nome, String cpf, String senha, String email, String convenio){
@@ -126,14 +126,8 @@ public class Hospital {
         if (!m.dentroDoExpediente(hora))
             throw new DataIndisponivel();
 
-        for (Consulta consulta : m.getConsultasMarcadas()) {
-            if ((consulta.getHora().equals(hora) && consulta.getMarcacao().equals(marcacao)
-                    && consulta.getMedicoResposavel().equals(m))){
-                throw new DataIndisponivel();
-            }
-        }
 
-        Consulta consulta = new Consulta(p, m, marcacao, hora);
+        Consulta consulta = new Consulta(p.getNome(), m.getNome(), p.getCpf(), m.getCpf(), marcacao, hora, m.getEspecialidade());
         consultasMarcadas.add(consulta);
         m.arquivarConsulta(consulta);
         p.agendarConsulta(consulta);
@@ -145,18 +139,18 @@ public class Hospital {
     }
 
     public void organizarConsultasPorMedicos(List<Consulta> consultas) {
-        consultas.sort((c1, c2) -> c1.getMedicoResposavel().getNome().compareTo(c2.getMedicoResposavel().getNome()));
+        consultas.sort((c1, c2) -> c1.getNomeMedico().compareTo(c2.getNomeMedico()));
     }
 
-    public List<Consulta> filtrarConsultasPorUsuario(Usuario usuario) {
+    public List<Consulta> filtrarConsultasPorUsuario(String usuarioCpf) {
         List<Consulta> consultas = new ArrayList<>();
         for (Consulta consulta : consultasMarcadas) {
-            if (usuario.equals(consulta.getMedicoResposavel()) || usuario.equals(consulta.getPaciente())) {
+            if (usuarioCpf.equals(consulta.getCpfPaciente()) || usuarioCpf.equals(consulta.getCpfMedicoResponsavel())) {
                 consultas.add(consulta);
             }
         }
 
-        return  consultas;
+        return consultas;
     }
 
 

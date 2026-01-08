@@ -3,6 +3,7 @@ package sistema;
 import java.io.File;
 import java.io.IOException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -13,18 +14,26 @@ import utilitarios.Hora;
 
 public class Consulta {
     private Data marcacao;
-    private Medico medico;
-    private Paciente paciente;
     private Hora hora;
     private String id;
+    private String nomePaciente;
+    private String nomeMedico;
+    private String cpfPaciente;
+    private String cpfMedicoResponsavel;
+    private Especialidade especialidade;
 
-    public Consulta(Paciente paciente, Medico medico, Data marcacao, Hora hora) {
-        id = paciente.getNome() + marcacao.getDia() + marcacao.getMes() + marcacao.getAno();
-        this.paciente = paciente;
-        this.medico = medico;
+    public Consulta(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico, Data marcacao, Hora hora, Especialidade  especialidade) {
+        id = nomePaciente + marcacao.getDia() + marcacao.getMes() + marcacao.getAno();
+        this.nomePaciente = nomePaciente;
+        this.nomeMedico = nomeMedico;
+        this.cpfPaciente = cpfPaciente;
+        this.cpfMedicoResponsavel = cpfMedico;
         this.marcacao = marcacao;
         this.hora = hora;
+        this.especialidade = especialidade;
     }
+
+    public Consulta(){}
 
     @Override
     public String toString() {
@@ -38,22 +47,18 @@ public class Consulta {
                 .formatted(
                         marcacao.toString(),
                         hora.toString(),
-                        medico.getNome(),
-                        paciente.getNome());
+                        nomeMedico,
+                        nomePaciente);
 
         return detalhes;
     }
 
-    public String Detalhes() {
-        return toString();
+    public String getCpfMedicoResponsavel() {
+        return cpfMedicoResponsavel;
     }
 
-    public Medico getMedicoResposavel() {
-        return medico;
-    }
-
-    public Paciente getPaciente() {
-        return paciente;
+    public String getCpfPaciente() {
+        return cpfPaciente;
     }
 
     public Hora getHora() {
@@ -64,58 +69,22 @@ public class Consulta {
         return marcacao;
     }
 
-    public void registrarConsulta() {
-        ObjectMapper mapper = new ObjectMapper();
-        File file = new File("src/main/sistema/docsDB/consultaDB.json");
+    public String getNomePaciente(){return nomePaciente;}
 
-        ObjectNode root;
+    public String getNomeMedico(){return nomeMedico;}
 
-        if (file.exists()) {
-            try {
-                if (file.exists()) {
-                    root = (ObjectNode) mapper.readTree(file);
-                } else {
-                    root = mapper.createObjectNode();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("Erro ao ler JSON", e);
-            }
-        } else {
-            root = mapper.createObjectNode();
-            root.set("usuarios", mapper.createArrayNode());
-        }
-        ArrayNode consultas;
-        if (root.has("consultas")) {
-            consultas = (ArrayNode) root.get("consultas");
-        } else {
-            consultas = mapper.createArrayNode();
-            root.set("consultas", consultas);
-        }
+    public Especialidade getEspecialidade(){return especialidade;}
 
-        ObjectNode novaConsulta = mapper.createObjectNode();
-        novaConsulta.put("id", id);
-        novaConsulta.put("medicoId", medico.getCrm());
-
-        ObjectNode objData = mapper.createObjectNode();
-        objData.put("dia", marcacao.getDia());
-        objData.put("mes", marcacao.getMes());
-        objData.put("ano", marcacao.getAno());
-
-        ObjectNode objHora = mapper.createObjectNode();
-        objHora.put("hora", hora.getHora());
-        objHora.put("minuto", hora.getMinuto());
-
-        novaConsulta.set("marcacao", objData);
-        novaConsulta.set("hora", objHora);
-
-        consultas.add(novaConsulta);
-
-    }
-
+    @JsonIgnore
     protected void setMedico(Medico medico) {
-        this.medico = medico;
+        this.cpfMedicoResponsavel = medico.getCpf();
+        this.nomeMedico = medico.getNome();
     }
+    @JsonIgnore
     protected void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
+        this.cpfPaciente = paciente.getCpf();
+        this.nomePaciente = paciente.getNome();
     }
+
+
 }

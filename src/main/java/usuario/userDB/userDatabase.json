@@ -1,1 +1,63 @@
-[ ]
+[ {
+  "nome" : "Carlos",
+  "cpf" : "12345678900",
+  "senha" : "12345",
+  "email" : "carlos@gmail.com",
+  "telefone" : null,
+  "tipo" : "MEDICO",
+  "crm" : "123456",
+  "especialidade" : "ENDOCRINOLOGISTA",
+  "ativo" : true,
+  "consultasMarcadas" : [ {
+    "marcacao" : {
+      "dia" : 14,
+      "mes" : 12,
+      "ano" : 2026
+    },
+    "hora" : {
+      "hora" : 15,
+      "minuto" : 0
+    },
+    "nomePaciente" : "Jao",
+    "nomeMedico" : "Carlos",
+    "cpfPaciente" : "12345678901",
+    "cpfMedicoResponsavel" : "12345678900",
+    "especialidade" : "ENDOCRINOLOGISTA"
+  } ],
+  "horaInicioExpediente" : {
+    "hora" : 12,
+    "minuto" : 0
+  },
+  "horaFimExpediente" : {
+    "hora" : 18,
+    "minuto" : 0
+  },
+  "tipoUsuario" : "MEDICO"
+}, {
+  "nome" : "Jao",
+  "cpf" : "12345678901",
+  "senha" : "12345",
+  "email" : "jao@gmail.com",
+  "telefone" : null,
+  "tipo" : "PACIENTE",
+  "endereco" : null,
+  "convenio" : "Unimed",
+  "prontuario" : null,
+  "consultasMarcadas" : [ {
+    "marcacao" : {
+      "dia" : 14,
+      "mes" : 12,
+      "ano" : 2026
+    },
+    "hora" : {
+      "hora" : 15,
+      "minuto" : 0
+    },
+    "nomePaciente" : "Jao",
+    "nomeMedico" : "Carlos",
+    "cpfPaciente" : "12345678901",
+    "cpfMedicoResponsavel" : "12345678900",
+    "especialidade" : "ENDOCRINOLOGISTA"
+  } ],
+  "tipoUsuario" : "PACIENTE"
+} ]

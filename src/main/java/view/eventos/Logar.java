@@ -11,31 +11,33 @@ import excessoes.UsuarioJaExistente;
 import sistema.Hospital;
 import usuario.*;
 import usuario.validacoes.*;
-import view.TelaLogin;
+import view.*;
+import view.telasDeUsuario.TelaMedico;
+import view.telasDeUsuario.TelaPaciente;
 
 public class Logar implements ActionListener {
-    private TelaLogin tela;
+    private TelaLogin telaLogin;
 
     private Hospital hospital;
 
     public Logar(TelaLogin tela, Hospital hospital) {
-        this.tela = tela;
+        this.telaLogin = tela;
         this.hospital = hospital;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String cpfRecebido = tela.getCPFDigitado();
-        String senhaRecebida = tela.getSenhaDigitada();
+        String cpfRecebido = telaLogin.getCPFDigitado();
+        String senhaRecebida = telaLogin.getSenhaDigitada();
         if (cpfRecebido.isEmpty() && senhaRecebida.isEmpty()) {
             JOptionPane.showMessageDialog(
-                    tela,
+                    telaLogin,
                     "CPF e Senha devem ser preenchidos!",
                     "Erro de Validação",
                     JOptionPane.WARNING_MESSAGE);
         } else if (!LoginService.autenticarEntradas(cpfRecebido, senhaRecebida)) {
             JOptionPane.showMessageDialog(
-                    tela,
+                    telaLogin,
                     "Uusuário ou senha inválidos!",
                     "Erro de autenticação.",
                     JOptionPane.WARNING_MESSAGE);
@@ -45,12 +47,17 @@ public class Logar implements ActionListener {
                                                                                                        // a lista de
                                                                                                        // usuarios nessa
                                                                                                        // função
-                JOptionPane.showMessageDialog(tela, "Bem-vindo(a), " + usuarioLogado.getNome());
+                JOptionPane.showMessageDialog(telaLogin, "Bem-vindo(a), " + usuarioLogado.getNome());
                 if (usuarioLogado instanceof Medico medico){
-                    //TODO: Criar tela do medico
+                    TelaMedico telaMedico = new TelaMedico(medico, telaLogin);
+                    telaLogin.setVisible(false);
+                    telaMedico.setVisible(true);
                 }
                 else if (usuarioLogado instanceof Paciente paciente){
                     //TODO: Criar tela do paciente
+                    TelaPaciente telaPaciente = new TelaPaciente(paciente, telaLogin, hospital);
+                    telaLogin.setVisible(false);
+                    telaPaciente.setVisible(true);
                 }
 
                 else if (usuarioLogado instanceof Secretaria secretaria){
@@ -59,10 +66,10 @@ public class Logar implements ActionListener {
 
 
             } catch (SenhaIncorretaException error) {
-                JOptionPane.showMessageDialog(tela, "Senha incorreta!","Erro de autenticação", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(telaLogin, "Senha incorreta!","Erro de autenticação", JOptionPane.WARNING_MESSAGE);
 
             } catch (UsuarioInexistente error){
-                JOptionPane.showMessageDialog(tela, "CPF fornecido não corresponde a nenhum usuário", "Erro de autenticação", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(telaLogin, "CPF fornecido não corresponde a nenhum usuário", "Erro de autenticação", JOptionPane.WARNING_MESSAGE);
             }
         }
     }

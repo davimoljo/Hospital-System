@@ -2,6 +2,7 @@ package usuario;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import sistema.Hospital;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

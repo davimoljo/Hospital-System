@@ -1,9 +1,11 @@
 package view;
 
+import excessoes.HoraInvalida;
 import excessoes.UsuarioJaExistente;
 import sistema.Hospital;
 import usuario.Especialidade;
 import usuario.TipoUsuario;
+import utilitarios.Hora;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +27,8 @@ public class TelaCadastro extends JFrame {
     private JTextField txtCRM = new JTextField();
     private JTextField txtPlano = new JTextField();
     private JTextField txtMatricula = new JTextField();
+    private JTextField inicioExpediente = new JTextField();
+    private JTextField fimExpediente = new JTextField();
     private JComboBox<Especialidade> comboEspec = new JComboBox<>(Especialidade.values());
     TipoUsuario tipoSelecionado;
     JButton salvar;
@@ -54,7 +58,13 @@ public class TelaCadastro extends JFrame {
                         return;
                     }
                     Especialidade esp = (Especialidade) comboEspec.getSelectedItem();
-                    hospital.cadastrarMedico(nome, cpf, senha, email, crm, esp);
+
+                    String[] horaInicioF = inicioExpediente.getText().split(":");
+                    String[] horaFimF = fimExpediente.getText().split(":");
+                    Hora inicio = new Hora(horaInicioF[0], horaInicioF[1]);
+                    Hora fim = new Hora(horaFimF[0], horaFimF[1]);
+
+                    hospital.cadastrarMedico(nome, cpf, senha, email, crm, esp, inicio, fim);
                 }
                 else if (tipoSelecionado.equals(TipoUsuario.PACIENTE)) {
                     String plano = txtPlano.getText();
@@ -79,6 +89,10 @@ public class TelaCadastro extends JFrame {
 
             } catch (UsuarioJaExistente er) {
                 JOptionPane.showMessageDialog(this, er.getMessage(), "Erro de Cadastro", JOptionPane.WARNING_MESSAGE);
+
+            } catch (HoraInvalida | NumberFormatException er){
+                JOptionPane.showMessageDialog(this, "Hora inválida", "Erro de Cadastro", JOptionPane.WARNING_MESSAGE);
+
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             }
@@ -145,6 +159,10 @@ public class TelaCadastro extends JFrame {
             painelFormulario.add(txtCRM);
             painelFormulario.add(new JLabel("Especialidade:"));
             painelFormulario.add(comboEspec);
+            painelFormulario.add(new JLabel("Inicio Expediente (HH:MM):"));
+            painelFormulario.add(inicioExpediente);
+            painelFormulario.add(new JLabel("Fim Expediente (HH:MM):"));
+            painelFormulario.add(fimExpediente);
             tipoSelecionado = TipoUsuario.MEDICO;
         } else if (cadastrarPaciente.isSelected()) {
             painelFormulario.add(new JLabel("Plano de Saúde:"));
