@@ -19,81 +19,63 @@ public class TelaRecepcionista extends JFrame {
     public TelaRecepcionista(Hospital hospital) {
         this.hospital = hospital;
 
-        // Configuração inicial da Janela
-        setTitle("Módulo de Recepção");
-        setSize(800, 600);
+        // Configuração do Container Principal (JFrame)
+        setTitle("Sistema Hospitalar - Recepção");
+        setSize(850, 650);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null); // Centraliza a janela na tela
+        setLocationRelativeTo(null); // Centraliza na tela
 
-        // Gerenciador de Abas para navegação entre funcionalidades
+        // Gerenciador de Abas (JTabbedPane) para alternar entre funcionalidades
         JTabbedPane abas = new JTabbedPane();
 
-        // Adição das abas funcionais
-        abas.addTab("Cadastrar Paciente", criarPainelCadastroPaciente());
-        abas.addTab("Gestão de Médicos", criarPainelGestaoMedicos());
+        abas.addTab("Cadastro de Paciente", criarPainelCadastroPaciente());
+        abas.addTab("Gestão Médica", criarPainelGestaoMedicos());
         abas.addTab("Agendamento", criarPainelAgendamento());
-        abas.addTab("Visitas & Monitoramento", criarPainelMonitoramento());
+        abas.addTab("Monitoramento & Visitas", criarPainelMonitoramento());
 
+        // Adiciona as abas ao painel de conteúdo padrão da janela
         add(abas);
     }
 
 
-     // ABA 1: Formulário de Cadastro de Pacientes
-     // Utiliza GridLayout para organização visual (Rótulo + Campo).
+     //Cria o formulário de cadastro de pacientes.
+     //Utiliza GridLayout para alinhar rótulos e campos de texto.
 
     private JPanel criarPainelCadastroPaciente() {
         JPanel painelFormulario = new JPanel(new GridLayout(7, 2, 10, 10));
 
-        // Componentes de entrada de dados
-        JLabel lblNome = new JLabel("Nome Completo:");
         JTextField txtNome = new JTextField();
-
-        JLabel lblCpf = new JLabel("CPF:");
         JTextField txtCpf = new JTextField();
-
-        JLabel lblEmail = new JLabel("Email:");
         JTextField txtEmail = new JTextField();
-
-        JLabel lblSenha = new JLabel("Senha:");
         JPasswordField txtSenha = new JPasswordField();
-
-        JLabel lblConvenio = new JLabel("Convênio:");
         JTextField txtConvenio = new JTextField();
-
         JButton btnSalvar = new JButton("Salvar Paciente");
 
-        // Adição dos componentes ao painel
-        painelFormulario.add(lblNome); painelFormulario.add(txtNome);
-        painelFormulario.add(lblCpf); painelFormulario.add(txtCpf);
-        painelFormulario.add(lblEmail); painelFormulario.add(txtEmail);
-        painelFormulario.add(lblSenha); painelFormulario.add(txtSenha);
-        painelFormulario.add(lblConvenio); painelFormulario.add(txtConvenio);
+        painelFormulario.add(new JLabel("Nome Completo:")); painelFormulario.add(txtNome);
+        painelFormulario.add(new JLabel("CPF:")); painelFormulario.add(txtCpf);
+        painelFormulario.add(new JLabel("Email:")); painelFormulario.add(txtEmail);
+        painelFormulario.add(new JLabel("Senha:")); painelFormulario.add(txtSenha);
+        painelFormulario.add(new JLabel("Convênio:")); painelFormulario.add(txtConvenio);
         painelFormulario.add(new JLabel("")); // Espaçador
         painelFormulario.add(btnSalvar);
 
-        // Tratamento do evento de clique (ActionListener)
-        btnSalvar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Delega a validação e cadastro para a camada de Serviço
-                    SecretariaService.cadastrarPaciente(
-                            hospital,
-                            txtNome.getText(),
-                            txtCpf.getText(),
-                            new String(txtSenha.getPassword()),
-                            txtEmail.getText(),
-                            txtConvenio.getText()
-                    );
-                    JOptionPane.showMessageDialog(null, "Paciente cadastrado com sucesso!");
-                    limparCampos(painelFormulario);
-                } catch (Exception erro) {
-                    JOptionPane.showMessageDialog(null, "Erro ao cadastrar: " + erro.getMessage());
-                }
+        // Tratamento de evento do botão Salvar
+        btnSalvar.addActionListener(e -> {
+            try {
+                SecretariaService.cadastrarPaciente(
+                        hospital,
+                        txtNome.getText(), txtCpf.getText(),
+                        new String(txtSenha.getPassword()),
+                        txtEmail.getText(), txtConvenio.getText()
+                );
+                JOptionPane.showMessageDialog(null, "Paciente cadastrado com sucesso.");
+                limparCampos(painelFormulario);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Erro no cadastro: " + ex.getMessage());
             }
         });
 
-        // Painel wrapper para aplicar margens
+        // Painel wrapper para aplicar margens (BorderLayout)
         JPanel painelPrincipal = new JPanel(new BorderLayout());
         painelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         painelPrincipal.add(painelFormulario, BorderLayout.NORTH);
@@ -102,47 +84,65 @@ public class TelaRecepcionista extends JFrame {
     }
 
 
-     // ABA 2: Gestão do Corpo Clínico
-     // Permite cadastro e alteração de status (Ativo/Inativo).
+     //Cria o formulário de gestão de médicos.
+     // Inclui campos de Horário exigidos pelo método cadastrarMedico do Hospital.
 
     private JPanel criarPainelGestaoMedicos() {
         JPanel painelPrincipal = new JPanel(new BorderLayout());
 
-        // Sub-painel: Cadastro de novo médico
-        JPanel painelCadastro = new JPanel(new GridLayout(5, 2, 5, 5));
+        // Área de Cadastro (Superior)
+        JPanel painelCadastro = new JPanel(new GridLayout(7, 2, 5, 5));
         painelCadastro.setBorder(BorderFactory.createTitledBorder("Novo Médico"));
 
         JTextField txtNome = new JTextField();
         JTextField txtCpf = new JTextField();
         JTextField txtCrm = new JTextField();
         JComboBox<Especialidade> comboEspecialidade = new JComboBox<>(Especialidade.values());
-        JButton btnCadastrar = new JButton("Cadastrar");
+
+        // Novos campos para atender à assinatura do método no Hospital
+        JTextField txtInicio = new JTextField("08:00");
+        JTextField txtFim = new JTextField("18:00");
+
+        JButton btnCadastrar = new JButton("Cadastrar Médico");
 
         painelCadastro.add(new JLabel("Nome:")); painelCadastro.add(txtNome);
         painelCadastro.add(new JLabel("CPF:")); painelCadastro.add(txtCpf);
         painelCadastro.add(new JLabel("CRM:")); painelCadastro.add(txtCrm);
         painelCadastro.add(new JLabel("Especialidade:")); painelCadastro.add(comboEspecialidade);
+        painelCadastro.add(new JLabel("Início Expediente (HH:MM):")); painelCadastro.add(txtInicio);
+        painelCadastro.add(new JLabel("Fim Expediente (HH:MM):")); painelCadastro.add(txtFim);
         painelCadastro.add(new JLabel("")); painelCadastro.add(btnCadastrar);
 
         btnCadastrar.addActionListener(e -> {
             try {
+                // Parse manual das horas (Formato HH:MM)
+                String[] partesInicio = txtInicio.getText().split(":");
+                String[] partesFim = txtFim.getText().split(":");
+
+                utilitarios.Hora hInicio = new utilitarios.Hora(Integer.parseInt(partesInicio[0]), Integer.parseInt(partesInicio[1]));
+                utilitarios.Hora hFim = new utilitarios.Hora(Integer.parseInt(partesFim[0]), Integer.parseInt(partesFim[1]));
+
+                // Chamada com os 8 argumentos obrigatórios
                 hospital.cadastrarMedico(
-                        txtNome.getText(), txtCpf.getText(), "1234", "padrao@hospital.com",
-                        txtCrm.getText(), (Especialidade) comboEspecialidade.getSelectedItem()
+                        txtNome.getText(), txtCpf.getText(),
+                        "senha123", "medico@hospital.com", // Dados padrão
+                        txtCrm.getText(),
+                        (Especialidade) comboEspecialidade.getSelectedItem(),
+                        hInicio, hFim
                 );
-                JOptionPane.showMessageDialog(null, "Médico cadastrado!");
+                JOptionPane.showMessageDialog(null, "Médico cadastrado com sucesso.");
                 limparCampos(painelCadastro);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
+                JOptionPane.showMessageDialog(null, "Erro: Verifique o formato das horas (HH:MM).");
             }
         });
 
-        // Sub-painel: Controle de Status
+        // Área de Status (Inferior)
         JPanel painelStatus = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        painelStatus.setBorder(BorderFactory.createTitledBorder("Gerenciar Status"));
+        painelStatus.setBorder(BorderFactory.createTitledBorder("Alterar Status"));
 
         JTextField txtBuscaCrm = new JTextField(15);
-        JButton btnAlterarStatus = new JButton("Alternar Status (Ativo/Inativo)");
+        JButton btnAlterarStatus = new JButton("Ativar/Desativar");
 
         painelStatus.add(new JLabel("CRM:"));
         painelStatus.add(txtBuscaCrm);
@@ -150,19 +150,16 @@ public class TelaRecepcionista extends JFrame {
 
         btnAlterarStatus.addActionListener(e -> {
             boolean encontrado = false;
-            // Busca linear simples por CRM
             for (Usuario u : hospital.getUsuarios()) {
-                if (u instanceof Medico) {
+                if (u instanceof Medico && ((Medico) u).getCrm().equals(txtBuscaCrm.getText())) {
                     Medico m = (Medico) u;
-                    if (m.getCrm().equals(txtBuscaCrm.getText())) {
-                        m.setAtivo(!m.isAtivo()); // Inverte o booleano
-                        JOptionPane.showMessageDialog(null, "Status alterado para: " + (m.isAtivo() ? "ATIVO" : "INATIVO"));
-                        encontrado = true;
-                        break;
-                    }
+                    m.setAtivo(!m.isAtivo());
+                    JOptionPane.showMessageDialog(null, "Status do Dr. " + m.getNome() + ": " + (m.isAtivo() ? "ATIVO" : "INATIVO"));
+                    encontrado = true;
+                    break;
                 }
             }
-            if (!encontrado) JOptionPane.showMessageDialog(null, "Médico não encontrado.");
+            if (!encontrado) JOptionPane.showMessageDialog(null, "CRM não encontrado.");
         });
 
         painelPrincipal.add(painelCadastro, BorderLayout.NORTH);
@@ -172,92 +169,86 @@ public class TelaRecepcionista extends JFrame {
     }
 
 
-     //ABA 3: Agendamento de Consultas
-     //Integração com SecretariaService para validação de regras de negócio.
+     // Interface de Agendamento.
+     // Delega a validação e execução para o SecretariaService.
 
     private JPanel criarPainelAgendamento() {
-        JPanel painelCampos = new JPanel(new GridLayout(5, 2, 10, 10));
-        painelCampos.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel painel = new JPanel(new GridLayout(5, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JTextField txtCpfPac = new JTextField();
         JTextField txtCrmMed = new JTextField();
-        JTextField txtData = new JTextField();
-        JTextField txtHora = new JTextField();
+        JTextField txtData = new JTextField("DD/MM/AAAA");
+        JTextField txtHora = new JTextField("HH:MM");
         JButton btnAgendar = new JButton("Confirmar Agendamento");
 
-        painelCampos.add(new JLabel("CPF Paciente:")); painelCampos.add(txtCpfPac);
-        painelCampos.add(new JLabel("CRM Médico:")); painelCampos.add(txtCrmMed);
-        painelCampos.add(new JLabel("Data (DD/MM/AAAA):")); painelCampos.add(txtData);
-        painelCampos.add(new JLabel("Hora (HH:MM):")); painelCampos.add(txtHora);
-        painelCampos.add(new JLabel("")); painelCampos.add(btnAgendar);
+        painel.add(new JLabel("CPF Paciente:")); painel.add(txtCpfPac);
+        painel.add(new JLabel("CRM Médico:")); painel.add(txtCrmMed);
+        painel.add(new JLabel("Data:")); painel.add(txtData);
+        painel.add(new JLabel("Hora:")); painel.add(txtHora);
+        painel.add(new JLabel("")); painel.add(btnAgendar);
 
         btnAgendar.addActionListener(e -> {
             try {
-                // Chama método estático de serviço para processar o agendamento
-                String resultado = SecretariaService.agendarConsulta(
+                String msg = SecretariaService.agendarConsulta(
                         hospital,
-                        txtCpfPac.getText(),
-                        txtCrmMed.getText(),
-                        txtData.getText(),
-                        txtHora.getText()
+                        txtCpfPac.getText(), txtCrmMed.getText(),
+                        txtData.getText(), txtHora.getText()
                 );
-                JOptionPane.showMessageDialog(null, resultado);
+                JOptionPane.showMessageDialog(null, msg);
             } catch (Exception ex) {
-                // Exibe exceções de negócio (Data inválida, Médico ocupado, etc)
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
         });
 
         JPanel wrapper = new JPanel(new BorderLayout());
-        wrapper.add(painelCampos, BorderLayout.NORTH);
+        wrapper.add(painel, BorderLayout.NORTH);
         return wrapper;
     }
 
 
-     //ABA 4: Visitas e Monitoramento
-     //Exibe informações em área de texto (Log).
+     // Painel de Monitoramento e Visitas.
+     // Utiliza JTextArea dentro de JScrollPane para listagem de dados.
 
     private JPanel criarPainelMonitoramento() {
         JPanel painel = new JPanel(new BorderLayout());
 
         JTextArea areaLog = new JTextArea();
-        areaLog.setEditable(false); // Impede edição manual
-        JScrollPane scroll = new JScrollPane(areaLog); // Adiciona barra de rolagem
+        areaLog.setEditable(false);
+        JScrollPane scroll = new JScrollPane(areaLog);
 
         JPanel painelControles = new JPanel(new FlowLayout());
         JTextField txtCpfVisita = new JTextField(12);
-        JButton btnVisita = new JButton("Checar Visita");
-        JButton btnDisponibilidade = new JButton("Listar Médicos Ativos");
+        JButton btnVisita = new JButton("Verificar Visita");
+        JButton btnListar = new JButton("Médicos Disponíveis");
 
         painelControles.add(new JLabel("CPF Paciente:"));
         painelControles.add(txtCpfVisita);
         painelControles.add(btnVisita);
-        painelControles.add(btnDisponibilidade);
+        painelControles.add(btnListar);
 
-        // Lógica de verificação de visita
         btnVisita.addActionListener(e -> {
             Usuario u = hospital.procurarUsuarioPorCPF(txtCpfVisita.getText());
             if (u instanceof Paciente) {
                 Paciente p = (Paciente) u;
-                // Regra simulada: Paciente com prontuário pode receber visita
+                // Simulação de regra: Permitido se tiver prontuário (internado)
                 if (p.getProntuario() != null) {
-                    areaLog.setText("STATUS: Visita AUTORIZADA para " + p.getNome());
+                    areaLog.setText(">> VISITA AUTORIZADA: " + p.getNome());
                 } else {
-                    areaLog.setText("STATUS: Visita NÃO AUTORIZADA (Sem internação ativa).");
+                    areaLog.setText(">> VISITA NEGADA: Paciente sem internação ativa.");
                 }
             } else {
-                areaLog.setText("ERRO: Paciente não encontrado.");
+                areaLog.setText("Erro: Paciente não localizado.");
             }
         });
 
-        // Lógica de listagem de médicos
-        btnDisponibilidade.addActionListener(e -> {
-            StringBuilder sb = new StringBuilder("=== CORPO CLÍNICO DISPONÍVEL ===\n");
+        btnListar.addActionListener(e -> {
+            StringBuilder sb = new StringBuilder(" MÉDICOS ATIVOS NO SISTEMA \n");
             for (Usuario u : hospital.getUsuarios()) {
                 if (u instanceof Medico) {
                     Medico m = (Medico) u;
                     if (m.isAtivo()) {
-                        sb.append(m.getNome()).append(" - ").append(m.getEspecialidade()).append("\n");
+                        sb.append(m.getNome()).append(" (").append(m.getEspecialidade()).append(")\n");
                     }
                 }
             }
@@ -270,7 +261,7 @@ public class TelaRecepcionista extends JFrame {
         return painel;
     }
 
-    // Método utilitário para limpar campos de texto de um painel
+    // Utilitário para limpar campos de texto após submissão
     private void limparCampos(JPanel painel) {
         for (Component c : painel.getComponents()) {
             if (c instanceof JTextField) {
