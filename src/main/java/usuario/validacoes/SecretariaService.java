@@ -1,7 +1,6 @@
 package usuario.validacoes;
 
 import sistema.Hospital;
-import sistema.Consulta;
 import usuario.Medico;
 import usuario.Paciente;
 import usuario.Usuario;
@@ -11,45 +10,48 @@ import excessoes.*;
 
 public class SecretariaService {
 
-    // Tenta agendar uma consulta validando se os CPFs e CRMs existem.
+    // Recebe os dados em texto da tela, valida se as pessoas existem e tenta agendar
     public static String agendarConsulta(Hospital hospital, String cpfPaciente, String crmMedico, String diaStr, String horaStr) {
         try {
-            // 1. Buscar o Paciente pelo CPF
+            // Verifica se o paciente existe pelo CPF
             Usuario uPaciente = hospital.procurarUsuarioPorCPF(cpfPaciente);
+
+            // Verifica se achou alguém e se essa pessoa é realmente um Paciente (e não um Médico/Secretária)
             if (uPaciente == null || !(uPaciente instanceof Paciente)) {
-                // Se não achar, lança erro (o catch lá embaixo vai pegar)
-                throw new UsuarioInexistente("Erro: Paciente com CPF " + cpfPaciente + " não encontrado.");
+                throw new UsuarioInexistente("Paciente com CPF " + cpfPaciente + " não encontrado.");
             }
             Paciente paciente = (Paciente) uPaciente;
 
-            // 2. Buscar o Médico pelo CRM
+            // Verifica se o médico existe pelo CRM
             Medico medico = buscarMedicoPorCrm(hospital, crmMedico);
             if (medico == null) {
-                throw new UsuarioInexistente("Erro: Médico com CRM " + crmMedico + " não encontrado.");
+                throw new UsuarioInexistente("Médico com CRM " + crmMedico + " não encontrado.");
             }
 
-            // 3. Converter Data e Hora (pode gerar erro de formato)
+            // Converte as Strings da tela para os objetos Data e Hora
             Data data = converterData(diaStr);
             Hora hora = converterHora(horaStr);
 
-            // 4. Mandar o Hospital marcar (valida disponibilidade)
+            // Se tudo estiver certo, manda o hospital realizar o agendamento
             hospital.marcarConsulta(paciente, medico, data, hora);
 
-            return "Sucesso! Consulta agendada para " + data + " às " + hora + " com Dr. " + medico.getNome();
+            return "Agendamento realizado para " + data + " às " + hora + " com Dr. " + medico.getNome();
 
         } catch (Exception e) {
-            // Esse catch pega TUDO (Checked e Unchecked) e repassa como erro de execução
-            // Isso resolve o problema do sublinhado vermelho no try
+            // Captura qualquer erro (formato inválido, médico ocupado, usuário inexistente)
+            // e repassa para a tela mostrar o alerta
             throw new RuntimeException(e.getMessage());
         }
     }
 
+    // Apenas repassa os dados para o cadastro do hospital
     public static void cadastrarPaciente(Hospital hospital, String nome, String cpf, String senha, String email, String convenio) {
         hospital.cadastrarPaciente(nome, cpf, senha, email, convenio);
     }
 
-    // --- Métodos Auxiliares Privados ---
+    // Métodos Auxiliares
 
+    // Varre a lista de usuários procurando um médico com o CRM informado
     private static Medico buscarMedicoPorCrm(Hospital hospital, String crm) {
         for (Usuario u : hospital.getUsuarios()) {
             if (u instanceof Medico) {
@@ -62,6 +64,7 @@ public class SecretariaService {
         return null;
     }
 
+    // Transforma a String DD/MM/AAA em um objeto Data, validando o formato com split
     private static Data converterData(String dataStr) {
         try {
             String[] partes = dataStr.split("/");
@@ -74,6 +77,7 @@ public class SecretariaService {
         }
     }
 
+    // Transforma a String HH:MM em um objeto Hora
     private static Hora converterHora(String horaStr) {
         try {
             String[] partes = horaStr.split(":");
