@@ -88,7 +88,7 @@ public class Consulta {
     }
 
     public Prontuario gerarProntuario(String doenca, StatusDoenca status) {
-        Prontuario prontuarioGerado = new Prontuario(paciente, doenca, status);
+        Prontuario prontuarioGerado = new Prontuario(nomePaciente, cpfPaciente, doenca, status);
         prontuario = prontuarioGerado;
         return prontuarioGerado;
     }

@@ -56,14 +56,6 @@ public class Paciente extends Usuario {
         return this.nome + " (Convênio: " + this.convenio + ")";
     }
 
-    public boolean definirProntuario(String doenca, StatusDoenca statusDoenca) {
-        if (prontuario == null) {
-            prontuario = new Prontuario(this, doenca, statusDoenca);
-            return true;
-        } else
-            return false;
-    }
-
     public Prontuario getProntuario() {
         return prontuario;
     }

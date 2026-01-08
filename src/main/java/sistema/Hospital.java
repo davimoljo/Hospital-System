@@ -154,13 +154,7 @@ public class Hospital {
     }
 
 
-    public Prontuario gerarProntuario(Paciente paciente, String doenca, StatusDoenca statusDoenca) {
-        if (!paciente.definirProntuario(doenca, statusDoenca)) {
-            throw new ProntuarioJaExistente("Prontuário de " + paciente.getNome() + " ja existente.");
-        }
-        prontuarios.add(paciente.getProntuario());
-        return paciente.getProntuario();
-    }
+
 
     public String getNomeHospital() {
         return nomeHospital;

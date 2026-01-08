@@ -5,18 +5,24 @@ import utilitarios.*;
 import java.util.*;
 
 public class Prontuario {
-    private final Paciente paciente;
-    private final String doenca;
+    private String nomePaciente;
+    private String cpfPaciente;
+    private String doenca;
     private StatusDoenca status;
 
-    public Prontuario(Paciente paciente, String doenca, StatusDoenca status) {
-        this.paciente = paciente;
+    public Prontuario(String nomePaciente, String cpfPaciente, String doenca, StatusDoenca status) {
+        this.nomePaciente = nomePaciente;
+        this.cpfPaciente = cpfPaciente;
         this.doenca = doenca;
         this.status = status;
     }
 
-    public Paciente getPaciente() {
-        return paciente;
+    public String getNomePaciente() {
+        return nomePaciente;
+    }
+
+    public String getCpfPaciente(){
+        return cpfPaciente;
     }
 
     public String getDoenca() {return doenca;}
@@ -32,7 +38,7 @@ public class Prontuario {
                 
                 Condição: %s
                 """
-                .formatted(paciente.getNome(), doenca, status.toString()));
+                .formatted(nomePaciente, doenca, status.toString()));
     }
 
     public void setStatus(StatusDoenca status){
