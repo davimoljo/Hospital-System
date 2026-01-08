@@ -134,6 +134,14 @@ public class Hospital {
         return consulta;
     }
 
+    public void desmarcarConsulta(Consulta consulta) {
+        consultasMarcadas.remove(consulta);
+        Medico medico = (Medico) procurarUsuarioPorCPF(consulta.getCpfMedicoResponsavel());
+        Paciente paciente = (Paciente) procurarUsuarioPorCPF(consulta.getCpfPaciente());
+        medico.removerConsulta(consulta);
+        paciente.removerConsulta(consulta);
+    }
+
     public void organizarConsultasPorData(List<Consulta> consultas) {
         consultas.sort((c1, c2) -> c1.getMarcacao().compareTo(c2.getMarcacao()));
     }

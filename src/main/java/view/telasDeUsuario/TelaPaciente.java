@@ -12,6 +12,7 @@ public class TelaPaciente extends JFrame {
     private Paciente paciente;
     private Hospital hospital;
     private DefaultTableModel modelConsultas;
+    JTable tabelaConsultas;
 
     public TelaPaciente(Paciente paciente, TelaLogin telaLogin, Hospital hospital) {
         this.paciente = paciente;
@@ -43,7 +44,7 @@ public class TelaPaciente extends JFrame {
         JPanel abaConsultas = new JPanel(new BorderLayout());
         String[] colunasConsultas = {"Data/Hora", "Médico", "Especialidade", "Status"};
         modelConsultas = new DefaultTableModel(colunasConsultas, 0);
-        JTable tabelaConsultas = new JTable(modelConsultas);
+        this.tabelaConsultas = new JTable(modelConsultas);
 
         // Simulação de preenchimento (ajuste conforme seus métodos de Paciente)
         for (Consulta c : paciente.getConsultasMarcadas()) {
@@ -139,8 +140,10 @@ public class TelaPaciente extends JFrame {
     }
 
     private void cancelarConsulta(){
-
+        Consulta consulta = paciente.getConsultasMarcadas().get(tabelaConsultas.getSelectedRow());
+        hospital.desmarcarConsulta(consulta);
     }
+
     protected void atualizarTabelaConsultas(){
         for (Consulta c : paciente.getConsultasMarcadas()) {
             modelConsultas.addRow(new Object[]{

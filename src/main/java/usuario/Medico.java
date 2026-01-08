@@ -53,6 +53,10 @@ public class Medico extends Usuario {
         consultasMarcadas.add(consulta);
     }
 
+    public void removerConsulta(Consulta consulta){
+        consultasMarcadas.remove(consulta);
+    }
+
     public List<Consulta> getConsultasMarcadas() {return  consultasMarcadas;}
 
     @Override
