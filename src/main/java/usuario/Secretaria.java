@@ -4,6 +4,7 @@ import sistema.Consulta;
 import sistema.Hospital;
 import utilitarios.*;
 
+import java.time.*;
 
 public class Secretaria extends Usuario {
     private String matricula;
@@ -27,7 +28,7 @@ public class Secretaria extends Usuario {
         return "SECRETARIA";
     }
 
-    public void marcarConsulta(Hospital hospital, Paciente p, Medico m, Data d, Hora h) {
+    public void marcarConsulta(Hospital hospital, Paciente p, Medico m, LocalDate d, LocalTime h) {
         // Delega para o hospital, que é quem sabe as regras de agendamento
         hospital.marcarConsulta(p, m, d, h);
     }

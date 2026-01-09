@@ -3,12 +3,10 @@ package sistema.documentos;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import usuario.Paciente;
-import utilitarios.Data;
 import usuario.Medico;
+import java.time.*;
 
-
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME, // Identifica pelo nome
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, // Identifica pelo nome
         include = JsonTypeInfo.As.PROPERTY, // Inclui uma propriedade no JSON
         property = "tipoDocumento" // Nome da propriedade que aparecerá no JSON
 )
@@ -23,7 +21,7 @@ public abstract class DocumentoMedico {
     protected Paciente pacienteRelacionado;
     protected Medico medicoRelacionado;
     protected String conteudo;
-    protected Data dataCriacao;
+    protected LocalDate dataCriacao;
 
     public DocumentoMedico(Paciente paciente, Medico medico) {
         pacienteRelacionado = paciente;
@@ -35,7 +33,7 @@ public abstract class DocumentoMedico {
         return id;
     }
 
-    public Data getData() {
+    public LocalDate getData() {
         return dataCriacao;
     }
 

@@ -5,11 +5,12 @@ import excessoes.UsuarioJaExistente;
 import sistema.Hospital;
 import usuario.Especialidade;
 import usuario.TipoUsuario;
-import utilitarios.Hora;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+
+import java.time.*;
 
 public class TelaCadastro extends JFrame {
     Hospital hospital;
@@ -36,7 +37,7 @@ public class TelaCadastro extends JFrame {
     public TelaCadastro(Hospital hospital, JFrame telaLogin) {
 
         salvar = new JButton("Finalizar Cadastro");
-        salvar.addActionListener(e->{
+        salvar.addActionListener(e -> {
             String nome = txtNome.getText();
             String cpf = txtCPF.getText();
             String senha = txtSenha.getText();
@@ -61,20 +62,24 @@ public class TelaCadastro extends JFrame {
 
                     String[] horaInicioF = inicioExpediente.getText().split(":");
                     String[] horaFimF = fimExpediente.getText().split(":");
-                    Hora inicio = new Hora(horaInicioF[0], horaInicioF[1]);
-                    Hora fim = new Hora(horaFimF[0], horaFimF[1]);
+                    int horaInicio = Integer.parseInt(horaInicioF[0]);
+                    int minutoInicio = Integer.parseInt(horaInicioF[1]);
+
+                    int horaFim = Integer.parseInt(horaFimF[0]);
+                    int minutoFim = Integer.parseInt(horaFimF[1]);
+
+                    LocalTime inicio = LocalTime.of(horaInicio, minutoInicio);
+                    LocalTime fim = LocalTime.of(horaFim, minutoFim);
 
                     hospital.cadastrarMedico(nome, cpf, senha, email, crm, esp, inicio, fim);
-                }
-                else if (tipoSelecionado.equals(TipoUsuario.PACIENTE)) {
+                } else if (tipoSelecionado.equals(TipoUsuario.PACIENTE)) {
                     String plano = txtPlano.getText();
                     if (plano.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "Informe o plano de saúde!");
                         return;
                     }
                     hospital.cadastrarPaciente(nome, cpf, senha, email, plano);
-                }
-                else if (tipoSelecionado.equals(TipoUsuario.SECRETARIA)) {
+                } else if (tipoSelecionado.equals(TipoUsuario.SECRETARIA)) {
                     String matricula = txtMatricula.getText();
                     if (matricula.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "A matrícula é obrigatória!");
@@ -90,11 +95,12 @@ public class TelaCadastro extends JFrame {
             } catch (UsuarioJaExistente er) {
                 JOptionPane.showMessageDialog(this, er.getMessage(), "Erro de Cadastro", JOptionPane.WARNING_MESSAGE);
 
-            } catch (HoraInvalida | NumberFormatException er){
+            } catch (HoraInvalida | NumberFormatException er) {
                 JOptionPane.showMessageDialog(this, "Hora inválida", "Erro de Cadastro", JOptionPane.WARNING_MESSAGE);
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erro inesperado: " + ex.getMessage(), "Erro",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
         this.hospital = hospital;
@@ -125,7 +131,6 @@ public class TelaCadastro extends JFrame {
         painelSelecoes.add(cadastrarPaciente);
         painelSelecoes.add(cadastrarSecretaria);
         add(painelSelecoes, BorderLayout.NORTH);
-
 
         painelFormulario = new JPanel();
         add(painelFormulario, BorderLayout.CENTER);
@@ -178,7 +183,6 @@ public class TelaCadastro extends JFrame {
         painelFormulario.add(new JLabel("")); // Espaço vazio para alinhar
         painelFormulario.add(salvar);
 
-
         // Atualiza a interface gráfica
         painelFormulario.revalidate();
         painelFormulario.repaint();
@@ -187,9 +191,9 @@ public class TelaCadastro extends JFrame {
     protected String getNome() {
         return txtNome.getText();
     }
+
     protected String getCPF() {
         return txtCPF.getText();
     }
-
 
 }

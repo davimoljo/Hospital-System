@@ -1,15 +1,16 @@
 package view.telasDeUsuario.medico;
 
 import sistema.Consulta;
-import utilitarios.Hora;
+import usuario.userDB.RepositorioDeUsuario;
+import java.time.*;
 
 public class SlotAtendimento {
 
-    private Hora inicio;
-    private Hora fim;
+    private LocalTime inicio;
+    private LocalTime fim;
     private Consulta consulta; // null = slot livre
 
-    public SlotAtendimento(Hora inicio, Hora fim) {
+    public SlotAtendimento(LocalTime inicio, LocalTime fim) {
         if (inicio.compareTo(fim) >= 0)
             throw new IllegalArgumentException("Horário inválido");
 
@@ -18,11 +19,11 @@ public class SlotAtendimento {
         this.consulta = null;
     }
 
-    public Hora getInicio() {
+    public LocalTime getInicio() {
         return inicio;
     }
 
-    public Hora getFim() {
+    public LocalTime getFim() {
         return fim;
     }
 
@@ -53,7 +54,7 @@ public class SlotAtendimento {
     public String toString() {
         String status = estaLivre()
                 ? "Livre"
-                : "Ocupado - " + consulta.getPaciente().getNome();
+                : "Ocupado - " + RepositorioDeUsuario.buscarUsuario(consulta.getCpfPaciente());
 
         return inicio + " - " + fim + " | " + status;
     }

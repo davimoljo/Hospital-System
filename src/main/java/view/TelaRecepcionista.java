@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.time.*;
+
 public class TelaRecepcionista extends JFrame {
 
     private final Hospital hospital;
@@ -37,9 +39,8 @@ public class TelaRecepcionista extends JFrame {
         add(abas);
     }
 
-
-     //Cria o formulário de cadastro de pacientes.
-     //Utiliza GridLayout para alinhar rótulos e campos de texto.
+    // Cria o formulário de cadastro de pacientes.
+    // Utiliza GridLayout para alinhar rótulos e campos de texto.
 
     private JPanel criarPainelCadastroPaciente() {
         JPanel painelFormulario = new JPanel(new GridLayout(7, 2, 10, 10));
@@ -51,11 +52,16 @@ public class TelaRecepcionista extends JFrame {
         JTextField txtConvenio = new JTextField();
         JButton btnSalvar = new JButton("Salvar Paciente");
 
-        painelFormulario.add(new JLabel("Nome Completo:")); painelFormulario.add(txtNome);
-        painelFormulario.add(new JLabel("CPF:")); painelFormulario.add(txtCpf);
-        painelFormulario.add(new JLabel("Email:")); painelFormulario.add(txtEmail);
-        painelFormulario.add(new JLabel("Senha:")); painelFormulario.add(txtSenha);
-        painelFormulario.add(new JLabel("Convênio:")); painelFormulario.add(txtConvenio);
+        painelFormulario.add(new JLabel("Nome Completo:"));
+        painelFormulario.add(txtNome);
+        painelFormulario.add(new JLabel("CPF:"));
+        painelFormulario.add(txtCpf);
+        painelFormulario.add(new JLabel("Email:"));
+        painelFormulario.add(txtEmail);
+        painelFormulario.add(new JLabel("Senha:"));
+        painelFormulario.add(txtSenha);
+        painelFormulario.add(new JLabel("Convênio:"));
+        painelFormulario.add(txtConvenio);
         painelFormulario.add(new JLabel("")); // Espaçador
         painelFormulario.add(btnSalvar);
 
@@ -66,8 +72,7 @@ public class TelaRecepcionista extends JFrame {
                         hospital,
                         txtNome.getText(), txtCpf.getText(),
                         new String(txtSenha.getPassword()),
-                        txtEmail.getText(), txtConvenio.getText()
-                );
+                        txtEmail.getText(), txtConvenio.getText());
                 JOptionPane.showMessageDialog(null, "Paciente cadastrado com sucesso.");
                 limparCampos(painelFormulario);
             } catch (Exception ex) {
@@ -83,9 +88,8 @@ public class TelaRecepcionista extends JFrame {
         return painelPrincipal;
     }
 
-
-     //Cria o formulário de gestão de médicos.
-     // Inclui campos de Horário exigidos pelo método cadastrarMedico do Hospital.
+    // Cria o formulário de gestão de médicos.
+    // Inclui campos de Horário exigidos pelo método cadastrarMedico do Hospital.
 
     private JPanel criarPainelGestaoMedicos() {
         JPanel painelPrincipal = new JPanel(new BorderLayout());
@@ -105,13 +109,20 @@ public class TelaRecepcionista extends JFrame {
 
         JButton btnCadastrar = new JButton("Cadastrar Médico");
 
-        painelCadastro.add(new JLabel("Nome:")); painelCadastro.add(txtNome);
-        painelCadastro.add(new JLabel("CPF:")); painelCadastro.add(txtCpf);
-        painelCadastro.add(new JLabel("CRM:")); painelCadastro.add(txtCrm);
-        painelCadastro.add(new JLabel("Especialidade:")); painelCadastro.add(comboEspecialidade);
-        painelCadastro.add(new JLabel("Início Expediente (HH:MM):")); painelCadastro.add(txtInicio);
-        painelCadastro.add(new JLabel("Fim Expediente (HH:MM):")); painelCadastro.add(txtFim);
-        painelCadastro.add(new JLabel("")); painelCadastro.add(btnCadastrar);
+        painelCadastro.add(new JLabel("Nome:"));
+        painelCadastro.add(txtNome);
+        painelCadastro.add(new JLabel("CPF:"));
+        painelCadastro.add(txtCpf);
+        painelCadastro.add(new JLabel("CRM:"));
+        painelCadastro.add(txtCrm);
+        painelCadastro.add(new JLabel("Especialidade:"));
+        painelCadastro.add(comboEspecialidade);
+        painelCadastro.add(new JLabel("Início Expediente (HH:MM):"));
+        painelCadastro.add(txtInicio);
+        painelCadastro.add(new JLabel("Fim Expediente (HH:MM):"));
+        painelCadastro.add(txtFim);
+        painelCadastro.add(new JLabel(""));
+        painelCadastro.add(btnCadastrar);
 
         btnCadastrar.addActionListener(e -> {
             try {
@@ -119,8 +130,8 @@ public class TelaRecepcionista extends JFrame {
                 String[] partesInicio = txtInicio.getText().split(":");
                 String[] partesFim = txtFim.getText().split(":");
 
-                utilitarios.Hora hInicio = new utilitarios.Hora(Integer.parseInt(partesInicio[0]), Integer.parseInt(partesInicio[1]));
-                utilitarios.Hora hFim = new utilitarios.Hora(Integer.parseInt(partesFim[0]), Integer.parseInt(partesFim[1]));
+                LocalTime hInicio = LocalTime.of(Integer.parseInt(partesInicio[0]), Integer.parseInt(partesInicio[1]));
+                LocalTime hFim = LocalTime.of(Integer.parseInt(partesFim[0]), Integer.parseInt(partesFim[1]));
 
                 // Chamada com os 8 argumentos obrigatórios
                 hospital.cadastrarMedico(
@@ -128,8 +139,7 @@ public class TelaRecepcionista extends JFrame {
                         "senha123", "medico@hospital.com", // Dados padrão
                         txtCrm.getText(),
                         (Especialidade) comboEspecialidade.getSelectedItem(),
-                        hInicio, hFim
-                );
+                        hInicio, hFim);
                 JOptionPane.showMessageDialog(null, "Médico cadastrado com sucesso.");
                 limparCampos(painelCadastro);
             } catch (Exception ex) {
@@ -154,12 +164,14 @@ public class TelaRecepcionista extends JFrame {
                 if (u instanceof Medico && ((Medico) u).getCrm().equals(txtBuscaCrm.getText())) {
                     Medico m = (Medico) u;
                     m.setAtivo(!m.isAtivo());
-                    JOptionPane.showMessageDialog(null, "Status do Dr. " + m.getNome() + ": " + (m.isAtivo() ? "ATIVO" : "INATIVO"));
+                    JOptionPane.showMessageDialog(null,
+                            "Status do Dr. " + m.getNome() + ": " + (m.isAtivo() ? "ATIVO" : "INATIVO"));
                     encontrado = true;
                     break;
                 }
             }
-            if (!encontrado) JOptionPane.showMessageDialog(null, "CRM não encontrado.");
+            if (!encontrado)
+                JOptionPane.showMessageDialog(null, "CRM não encontrado.");
         });
 
         painelPrincipal.add(painelCadastro, BorderLayout.NORTH);
@@ -168,9 +180,8 @@ public class TelaRecepcionista extends JFrame {
         return painelPrincipal;
     }
 
-
-     // Interface de Agendamento.
-     // Delega a validação e execução para o SecretariaService.
+    // Interface de Agendamento.
+    // Delega a validação e execução para o SecretariaService.
 
     private JPanel criarPainelAgendamento() {
         JPanel painel = new JPanel(new GridLayout(5, 2, 10, 10));
@@ -182,19 +193,23 @@ public class TelaRecepcionista extends JFrame {
         JTextField txtHora = new JTextField("HH:MM");
         JButton btnAgendar = new JButton("Confirmar Agendamento");
 
-        painel.add(new JLabel("CPF Paciente:")); painel.add(txtCpfPac);
-        painel.add(new JLabel("CRM Médico:")); painel.add(txtCrmMed);
-        painel.add(new JLabel("Data:")); painel.add(txtData);
-        painel.add(new JLabel("Hora:")); painel.add(txtHora);
-        painel.add(new JLabel("")); painel.add(btnAgendar);
+        painel.add(new JLabel("CPF Paciente:"));
+        painel.add(txtCpfPac);
+        painel.add(new JLabel("CRM Médico:"));
+        painel.add(txtCrmMed);
+        painel.add(new JLabel("Data:"));
+        painel.add(txtData);
+        painel.add(new JLabel("Hora:"));
+        painel.add(txtHora);
+        painel.add(new JLabel(""));
+        painel.add(btnAgendar);
 
         btnAgendar.addActionListener(e -> {
             try {
                 String msg = SecretariaService.agendarConsulta(
                         hospital,
                         txtCpfPac.getText(), txtCrmMed.getText(),
-                        txtData.getText(), txtHora.getText()
-                );
+                        txtData.getText(), txtHora.getText());
                 JOptionPane.showMessageDialog(null, msg);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -206,9 +221,8 @@ public class TelaRecepcionista extends JFrame {
         return wrapper;
     }
 
-
-     // Painel de Monitoramento e Visitas.
-     // Utiliza JTextArea dentro de JScrollPane para listagem de dados.
+    // Painel de Monitoramento e Visitas.
+    // Utiliza JTextArea dentro de JScrollPane para listagem de dados.
 
     private JPanel criarPainelMonitoramento() {
         JPanel painel = new JPanel(new BorderLayout());

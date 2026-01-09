@@ -1,25 +1,22 @@
 package usuario;
 
-
 import sistema.Consulta;
 import sistema.Hospital;
-import utilitarios.Data;
-import utilitarios.Hora;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import java.time.*;
 
 public class Medico extends Usuario {
     private String crm;
     private Especialidade especialidade;
     private boolean ativo;
     private List<Consulta> consultasMarcadas;
-    private Hora horaInicioExpediente;
-    private Hora horaFimExpediente;
+    private LocalTime horaInicioExpediente;
+    private LocalTime horaFimExpediente;
 
-
-
-    public Medico(String nome, String cpf, String senha, String email, String crm, Especialidade especialidade, Hora horaInicioExpediente, Hora horaFimExpediente) {
+    public Medico(String nome, String cpf, String senha, String email, String crm, Especialidade especialidade,
+            LocalTime horaInicioExpediente, LocalTime horaFimExpediente) {
 
         super(nome, cpf, senha, email);
         this.crm = crm;
@@ -31,51 +28,68 @@ public class Medico extends Usuario {
         this.horaFimExpediente = horaFimExpediente;
     }
 
-    public Medico(){}
+    public Medico() {
+    }
 
-    public String getCrm() { return crm; }
-    public Especialidade getEspecialidade() { return especialidade; }
+    public String getCrm() {
+        return crm;
+    }
 
-    public boolean isAtivo() { return ativo; }
+    public Especialidade getEspecialidade() {
+        return especialidade;
+    }
 
-    public void setAtivo(boolean ativo) { this.ativo = ativo; }
+    public boolean isAtivo() {
+        return ativo;
+    }
 
-    public void configurarHorario(Hora inicio, Hora fim) {
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public void configurarHorario(LocalTime inicio, LocalTime fim) {
         this.horaInicioExpediente = inicio;
         this.horaFimExpediente = fim;
     }
 
-    public boolean dentroDoExpediente(Hora hora){
-        return hora.getHora() >= this.horaInicioExpediente.getHora() && hora.getHora() <= this.horaFimExpediente.getHora();
+    public boolean dentroDoExpediente(LocalTime hora) {
+        return hora.getHour() >= this.horaInicioExpediente.getHour()
+                && hora.getHour() <= this.horaFimExpediente.getHour();
     }
 
-    public void arquivarConsulta(Consulta consulta){
+    public void arquivarConsulta(Consulta consulta) {
         consultasMarcadas.add(consulta);
     }
 
-    public void removerConsulta(Consulta consulta){
+    public void removerConsulta(Consulta consulta) {
         consultasMarcadas.remove(consulta);
     }
 
-    public List<Consulta> getConsultasMarcadas() {return  consultasMarcadas;}
+    public List<Consulta> getConsultasMarcadas() {
+        return consultasMarcadas;
+    }
 
     @Override
     public String getTipoUsuario() {
         return "MEDICO";
     }
 
-    public boolean isDisponivel(Hora hora, Data data){
-        for (Consulta c : consultasMarcadas){
-            if (c.getHora().equals(hora) && c.getMarcacao().equals(data)){
+    public boolean isDisponivel(LocalTime hora, LocalDate data) {
+        for (Consulta c : consultasMarcadas) {
+            if (c.getHora().equals(hora) && c.getMarcacao().equals(data)) {
                 return false;
             }
         }
         return isAtivo() && dentroDoExpediente(hora);
     }
 
-    public Hora getHoraInicioExpediente() {return horaInicioExpediente;}
+    public LocalTime getHoraInicioExpediente() {
+        return horaInicioExpediente;
+    }
 
-    public Hora getHoraFimExpediente() {return horaFimExpediente;}
+    public LocalTime getHoraFimExpediente() {
+        return horaFimExpediente;
+    }
 
     @Override
     public String toString() {

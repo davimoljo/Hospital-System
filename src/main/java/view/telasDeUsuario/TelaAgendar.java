@@ -5,13 +5,12 @@ import excessoes.HoraInvalida;
 import sistema.Consulta;
 import sistema.Hospital;
 import usuario.*;
-import utilitarios.Data;
-import utilitarios.Hora;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.*;
 
 public class TelaAgendar extends JFrame {
     private JTextField data, horario;
@@ -24,8 +23,8 @@ public class TelaAgendar extends JFrame {
     private Hospital hospital;
     private Paciente paciente;
     private TelaPaciente telaPaciente;
-    Data d;
-    Hora h;
+    LocalDate d;
+    LocalTime h;
 
     public TelaAgendar(Hospital hospital, Paciente paciente, TelaPaciente telaPaciente) {
         this.hospital = hospital;
@@ -56,12 +55,18 @@ public class TelaAgendar extends JFrame {
         especialidadeModel = new JComboBox<>(Especialidade.values());
 
         // Adicionando componentes com Labels
-        gbc.gridy = 0; painelEsquerdo.add(new JLabel("Data (DD/MM/AAAA):"), gbc);
-        gbc.gridy = 1; painelEsquerdo.add(data, gbc);
-        gbc.gridy = 2; painelEsquerdo.add(new JLabel("Horário (HH:MM):"), gbc);
-        gbc.gridy = 3; painelEsquerdo.add(horario, gbc);
-        gbc.gridy = 4; painelEsquerdo.add(new JLabel("Especialidade:"), gbc);
-        gbc.gridy = 5; painelEsquerdo.add(especialidadeModel, gbc);
+        gbc.gridy = 0;
+        painelEsquerdo.add(new JLabel("Data (DD/MM/AAAA):"), gbc);
+        gbc.gridy = 1;
+        painelEsquerdo.add(data, gbc);
+        gbc.gridy = 2;
+        painelEsquerdo.add(new JLabel("Horário (HH:MM):"), gbc);
+        gbc.gridy = 3;
+        painelEsquerdo.add(horario, gbc);
+        gbc.gridy = 4;
+        painelEsquerdo.add(new JLabel("Especialidade:"), gbc);
+        gbc.gridy = 5;
+        painelEsquerdo.add(especialidadeModel, gbc);
 
         procurarMedicos = new JButton("Procurar Médicos");
         procurarMedicos.addActionListener(new procurarMedicoEvento(this));
@@ -112,7 +117,6 @@ public class TelaAgendar extends JFrame {
         });
     }
 
-
     private class procurarMedicoEvento implements ActionListener {
         TelaAgendar telaAgendar;
 
@@ -125,11 +129,12 @@ public class TelaAgendar extends JFrame {
             modelMedico.clear();
             String[] dataF = data.getText().split("/");
             String[] horarioF = horario.getText().split(":");
-            Integer[] dataI =  new Integer[3];
+            Integer[] dataI = new Integer[3];
             Integer[] horarioI = new Integer[2];
             Especialidade esp = (Especialidade) especialidadeModel.getSelectedItem();
             if (dataF.length != 3 && horarioF.length != 2) {
-                JOptionPane.showMessageDialog(telaAgendar, "Formato Data/Hora inválido", "Erro de formato", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(telaAgendar, "Formato Data/Hora inválido", "Erro de formato",
+                        JOptionPane.ERROR_MESSAGE);
             }
             try {
                 int i = 0;
@@ -140,21 +145,23 @@ public class TelaAgendar extends JFrame {
                 for (String s : horarioF) {
                     horarioI[i++] = Integer.parseInt(s);
                 }
-            }catch (NumberFormatException | IndexOutOfBoundsException ex) {
-                JOptionPane.showMessageDialog(telaAgendar, "Data/Hora inválido", "Erro de formato", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException | IndexOutOfBoundsException ex) {
+                JOptionPane.showMessageDialog(telaAgendar, "Data/Hora inválido", "Erro de formato",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try {
-                h = new Hora(horarioI[0], horarioI[1]);
-                d = new Data(dataI[0], dataI[1], dataI[2]);
-            }catch (HoraInvalida | DataInvalida invalida){
-                JOptionPane.showMessageDialog(telaAgendar, invalida.getMessage(), "Erro de formato", JOptionPane.ERROR_MESSAGE);
+                h = LocalTime.of(horarioI[0], horarioI[1]);
+                d = LocalDate.of(dataI[0], dataI[1], dataI[2]);
+            } catch (HoraInvalida | DataInvalida invalida) {
+                JOptionPane.showMessageDialog(telaAgendar, invalida.getMessage(), "Erro de formato",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             for (Usuario usuario : hospital.getUsuarios()) {
-                if (usuario instanceof Medico medico){
-                    if (medico.getEspecialidade().equals(esp) && medico.isDisponivel(h, d)){
+                if (usuario instanceof Medico medico) {
+                    if (medico.getEspecialidade().equals(esp) && medico.isDisponivel(h, d)) {
                         modelMedico.addElement(medico);
                     }
                 }
@@ -171,10 +178,11 @@ public class TelaAgendar extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!listaMedicosDisponiveis.isSelectionEmpty()){
+            if (!listaMedicosDisponiveis.isSelectionEmpty()) {
                 Medico medico = listaMedicosDisponiveis.getSelectedValue();
                 Consulta consulta = hospital.marcarConsulta(paciente, medico, d, h);
-                JOptionPane.showMessageDialog(this.telaAgendar, "Consulta marcada com sucesso!", "Consulta marcada", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this.telaAgendar, "Consulta marcada com sucesso!", "Consulta marcada",
+                        JOptionPane.INFORMATION_MESSAGE);
                 telaAgendar.setVisible(false);
                 telaAgendar.telaPaciente.setVisible(true);
                 telaAgendar.telaPaciente.atualizarTabelaConsultas();

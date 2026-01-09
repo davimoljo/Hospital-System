@@ -43,33 +43,34 @@ public class Logar implements ActionListener {
                     JOptionPane.WARNING_MESSAGE);
         } else {
             try {
-                Usuario usuarioLogado = LoginService.validarUsuario(hospital.getUsuarios(), cpfRecebido, senhaRecebida); // TODO: Colocar
-                                                                                                       // a lista de
-                                                                                                       // usuarios nessa
-                                                                                                       // função
+                Usuario usuarioLogado = LoginService.validarUsuario(hospital.getUsuarios(), cpfRecebido, senhaRecebida); // TODO:
+                                                                                                                         // Colocar
+                // a lista de
+                // usuarios nessa
+                // função
                 JOptionPane.showMessageDialog(telaLogin, "Bem-vindo(a), " + usuarioLogado.getNome());
-                if (usuarioLogado instanceof Medico medico){
-                    TelaMedico telaMedico = new TelaMedico(medico, telaLogin);
+                if (usuarioLogado instanceof Medico medico) {
+                    TelaMedico telaMedico = new TelaMedico(hospital, medico, telaLogin);
                     telaLogin.setVisible(false);
                     telaMedico.setVisible(true);
-                }
-                else if (usuarioLogado instanceof Paciente paciente){
-                    //TODO: Criar tela do paciente
+                } else if (usuarioLogado instanceof Paciente paciente) {
+                    // TODO: Criar tela do paciente
                     TelaPaciente telaPaciente = new TelaPaciente(paciente, telaLogin, hospital);
                     telaLogin.setVisible(false);
                     telaPaciente.setVisible(true);
                 }
 
-                else if (usuarioLogado instanceof Secretaria secretaria){
-                    //TODO: Criar tela da secretaria
+                else if (usuarioLogado instanceof Secretaria secretaria) {
+                    // TODO: Criar tela da secretaria
                 }
 
-
             } catch (SenhaIncorretaException error) {
-                JOptionPane.showMessageDialog(telaLogin, "Senha incorreta!","Erro de autenticação", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(telaLogin, "Senha incorreta!", "Erro de autenticação",
+                        JOptionPane.WARNING_MESSAGE);
 
-            } catch (UsuarioInexistente error){
-                JOptionPane.showMessageDialog(telaLogin, "CPF fornecido não corresponde a nenhum usuário", "Erro de autenticação", JOptionPane.WARNING_MESSAGE);
+            } catch (UsuarioInexistente error) {
+                JOptionPane.showMessageDialog(telaLogin, "CPF fornecido não corresponde a nenhum usuário",
+                        "Erro de autenticação", JOptionPane.WARNING_MESSAGE);
             }
         }
     }

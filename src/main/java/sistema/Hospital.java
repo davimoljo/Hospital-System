@@ -13,6 +13,7 @@ import utilitarios.*;
 import utilitarios.Medicamento;
 
 import java.util.*;
+import java.time.*;
 
 public class Hospital {
     protected final String nomeHospital = "HU (Hospital Universitário)";
@@ -21,16 +22,15 @@ public class Hospital {
     private List<Prontuario> prontuarios;
     private List<Consulta> consultasMarcadas;
 
-    public Hospital(){
+    public Hospital() {
         usuarios = RepositorioDeUsuario.carregarUsuarios();
         documentos = RegistraDocumento.leDocumentos();
         prontuarios = RegistraDocumento.leProntuarios();
         consultasMarcadas = RegistraDocumento.leConsultas();
         for (Usuario u : usuarios) {
-            if (u instanceof Medico m){
+            if (u instanceof Medico m) {
                 m.getConsultasMarcadas().clear();
-            }
-            else if (u instanceof Paciente p){
+            } else if (u instanceof Paciente p) {
                 p.getConsultasMarcadas().clear();
             }
         }
@@ -46,7 +46,7 @@ public class Hospital {
         }
     }
 
-    public void fechar(){
+    public void fechar() {
         RegistraDocumento.registrarConsultas(consultasMarcadas);
         RegistraDocumento.registrarDocumentos(documentos);
         RegistraDocumento.registrarProntuarios(prontuarios);
@@ -56,6 +56,7 @@ public class Hospital {
     private void cadastrarUsuario(Usuario usuario) {
         usuarios.add(usuario);
     }
+
     private boolean usuarioExiste(String cpf) {
         for (Usuario usuario : usuarios) {
             if (usuario.getCpf().equals(cpf)) {
@@ -65,23 +66,25 @@ public class Hospital {
 
         return false;
     }
-    public void cadastrarMedico(String nome, String cpf, String senha, String email, String crm, Especialidade especialidade, Hora inicioExpediente, Hora fimExpediente) {
-        if(usuarioExiste(cpf)){
-            throw new UsuarioJaExistente("Usuário com cpf " + cpf +" já existe");
+
+    public void cadastrarMedico(String nome, String cpf, String senha, String email, String crm,
+            Especialidade especialidade, LocalTime inicioExpediente, LocalTime fimExpediente) {
+        if (usuarioExiste(cpf)) {
+            throw new UsuarioJaExistente("Usuário com cpf " + cpf + " já existe");
         }
         cadastrarUsuario(new Medico(nome, cpf, senha, email, crm, especialidade, inicioExpediente, fimExpediente));
     }
 
-    public void cadastrarPaciente(String nome, String cpf, String senha, String email, String convenio){
-        if (usuarioExiste(cpf)){
-            throw new UsuarioJaExistente("Usuário com cpf " + cpf +" já existe");
+    public void cadastrarPaciente(String nome, String cpf, String senha, String email, String convenio) {
+        if (usuarioExiste(cpf)) {
+            throw new UsuarioJaExistente("Usuário com cpf " + cpf + " já existe");
         }
         cadastrarUsuario(new Paciente(nome, cpf, senha, email, convenio));
     }
 
-    public void cadastrarSecretaria(String nome, String cpf, String senha, String email, String matricula){
-        if (usuarioExiste(cpf)){
-            throw new UsuarioJaExistente("Usuário com cpf " + cpf +" já existe");
+    public void cadastrarSecretaria(String nome, String cpf, String senha, String email, String matricula) {
+        if (usuarioExiste(cpf)) {
+            throw new UsuarioJaExistente("Usuário com cpf " + cpf + " já existe");
         }
         cadastrarUsuario(new Secretaria(nome, cpf, senha, email, matricula));
     }
@@ -97,6 +100,13 @@ public class Hospital {
         return achados;
     }
 
+    public Paciente buscarPacientePorCPF(String cpf) {
+        for (Usuario u : usuarios) {
+            if (u.getCpf().equals(cpf) && u instanceof Paciente)
+                return (Paciente) u;
+        }
+    }
+
     public Usuario procurarUsuarioPorCPF(String cpf) {
         for (Usuario usuario : usuarios) {
             if (usuario.getCpf().equals(cpf)) {
@@ -106,7 +116,7 @@ public class Hospital {
         return null;
     }
 
-    public DocumentoMedico gerarAtestado(Paciente p, Medico m, Data termino) {
+    public DocumentoMedico gerarAtestado(Paciente p, Medico m, LocalDate termino) {
         DocumentoMedico atestado = new Atestado(p, m, termino);
         documentos.add(atestado);
         return atestado;
@@ -118,7 +128,8 @@ public class Hospital {
         return receita;
     }
 
-    public Consulta marcarConsulta(Paciente p, Medico m, Data marcacao, Hora hora) throws DataIndisponivel, MedicoDesativado{
+    public Consulta marcarConsulta(Paciente p, Medico m, LocalDate marcacao, LocalTime hora)
+            throws DataIndisponivel, MedicoDesativado {
 
         if (!m.isAtivo())
             throw new MedicoDesativado("O doutor " + m.getNome() + " não está mais disponível");
@@ -126,8 +137,8 @@ public class Hospital {
         if (!m.dentroDoExpediente(hora))
             throw new DataIndisponivel();
 
-
-        Consulta consulta = new Consulta(p.getNome(), m.getNome(), p.getCpf(), m.getCpf(), marcacao, hora, m.getEspecialidade());
+        Consulta consulta = new Consulta(p.getNome(), m.getNome(), p.getCpf(), m.getCpf(), marcacao, hora,
+                m.getEspecialidade());
         consultasMarcadas.add(consulta);
         m.arquivarConsulta(consulta);
         p.agendarConsulta(consulta);
@@ -161,12 +172,11 @@ public class Hospital {
         return consultas;
     }
 
-
-
-
     public String getNomeHospital() {
         return nomeHospital;
     }
 
-    public List<Usuario> getUsuarios() {return  usuarios;}
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
 }

@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import usuario.*;
-import utilitarios.Data;
-import utilitarios.Hora;
+
+import java.time.*;
 
 public class Consulta {
-    private Data marcacao;
-    private Hora hora;
+    private LocalDate marcacao;
+    private LocalTime hora;
     private String id;
     private Prontuario prontuario;
     private String nomePaciente;
@@ -23,8 +23,9 @@ public class Consulta {
     private String cpfMedicoResponsavel;
     private Especialidade especialidade;
 
-    public Consulta(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico, Data marcacao, Hora hora, Especialidade  especialidade) {
-        id = nomePaciente + marcacao.getDia() + marcacao.getMes() + marcacao.getAno();
+    public Consulta(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico, LocalDate marcacao,
+            LocalTime hora, Especialidade especialidade) {
+        id = nomePaciente + marcacao.getDayOfMonth() + marcacao.getMonthValue() + marcacao.getYear();
         this.nomePaciente = nomePaciente;
         this.nomeMedico = nomeMedico;
         this.cpfPaciente = cpfPaciente;
@@ -34,7 +35,8 @@ public class Consulta {
         this.especialidade = especialidade;
     }
 
-    public Consulta(){}
+    public Consulta() {
+    }
 
     @Override
     public String toString() {
@@ -62,19 +64,25 @@ public class Consulta {
         return cpfPaciente;
     }
 
-    public Hora getHora() {
+    public LocalTime getHora() {
         return hora;
     }
 
-    public Data getMarcacao() {
+    public LocalDate getMarcacao() {
         return marcacao;
     }
 
-    public String getNomePaciente(){return nomePaciente;}
+    public String getNomePaciente() {
+        return nomePaciente;
+    }
 
-    public String getNomeMedico(){return nomeMedico;}
+    public String getNomeMedico() {
+        return nomeMedico;
+    }
 
-    public Especialidade getEspecialidade(){return especialidade;}
+    public Especialidade getEspecialidade() {
+        return especialidade;
+    }
 
     @JsonIgnore
     protected void setMedico(Medico medico) {
@@ -96,4 +104,5 @@ public class Consulta {
     public Prontuario getProntuario() {
         return prontuario;
     }
+
 }

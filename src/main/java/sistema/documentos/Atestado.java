@@ -1,12 +1,13 @@
 package sistema.documentos;
 
 import usuario.*;
-import utilitarios.Data;
+
+import java.time.*;
 
 public class Atestado extends DocumentoMedico {
-    private Data dataTermino;
+    private LocalDate dataTermino;
 
-    public Atestado(Paciente paciente, Medico medico, Data termino) {
+    public Atestado(Paciente paciente, Medico medico, LocalDate termino) {
         super(paciente, medico);
         dataTermino = termino;
     }
