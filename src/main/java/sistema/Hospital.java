@@ -32,6 +32,7 @@ public class Hospital {
                 m.getConsultasMarcadas().clear();
             } else if (u instanceof Paciente p) {
                 p.getConsultasMarcadas().clear();
+                p.getConsultasAnteriores().clear();
             }
         }
 
@@ -42,7 +43,10 @@ public class Hospital {
             c.setPaciente((Paciente) pacienteOficial);
 
             ((Medico) medicoOficial).arquivarConsulta(c);
-            ((Paciente) pacienteOficial).agendarConsulta(c);
+            if (c.consultaJaRealizada())
+                ((Paciente) pacienteOficial).addConsultaAnterior(c);
+            else
+                ((Paciente) pacienteOficial).agendarConsulta(c);
         }
     }
 
@@ -105,6 +109,7 @@ public class Hospital {
             if (u.getCpf().equals(cpf) && u instanceof Paciente)
                 return (Paciente) u;
         }
+        return null;
     }
 
     public Usuario procurarUsuarioPorCPF(String cpf) {

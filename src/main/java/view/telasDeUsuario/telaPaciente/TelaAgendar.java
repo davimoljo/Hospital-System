@@ -1,4 +1,4 @@
-package view.telasDeUsuario;
+package view.telasDeUsuario.telaPaciente;
 
 import excessoes.DataInvalida;
 import excessoes.HoraInvalida;
@@ -56,7 +56,7 @@ public class TelaAgendar extends JFrame {
 
         // Adicionando componentes com Labels
         gbc.gridy = 0;
-        painelEsquerdo.add(new JLabel("Data (DD/MM/AAAA):"), gbc);
+        painelEsquerdo.add(new JLabel("Data (AAAA/MM/DD):"), gbc);
         gbc.gridy = 1;
         painelEsquerdo.add(data, gbc);
         gbc.gridy = 2;
@@ -153,7 +153,11 @@ public class TelaAgendar extends JFrame {
             try {
                 h = LocalTime.of(horarioI[0], horarioI[1]);
                 d = LocalDate.of(dataI[0], dataI[1], dataI[2]);
-            } catch (HoraInvalida | DataInvalida invalida) {
+                if (LocalDate.now().isAfter(d) || (LocalDate.now().isEqual(d)) && LocalTime.now().isAfter(h)) {
+                    JOptionPane.showMessageDialog(telaAgendar, "Impossível marcar uma consulta no passado!", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (HoraInvalida | DataInvalida| DateTimeException invalida) {
                 JOptionPane.showMessageDialog(telaAgendar, invalida.getMessage(), "Erro de formato",
                         JOptionPane.ERROR_MESSAGE);
                 return;

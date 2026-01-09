@@ -14,6 +14,7 @@ public class Paciente extends Usuario {
     private String convenio;
     private Prontuario prontuario;
     private List<Consulta> consultasMarcadas;
+    private List<Consulta> consultasAnteriores;
     private boolean internado;
     private boolean aptoAVisitas;
 
@@ -23,6 +24,7 @@ public class Paciente extends Usuario {
         tipo = TipoUsuario.PACIENTE;
         prontuario = null;
         consultasMarcadas = new ArrayList<>();
+        consultasAnteriores  = new ArrayList<>();
         internado = false;
         aptoAVisitas = false;
     }
@@ -86,5 +88,17 @@ public class Paciente extends Usuario {
 
     public boolean isAptoAVisitas() {
         return aptoAVisitas;
+    }
+
+    public List<Consulta> getConsultasAnteriores() {
+        return consultasAnteriores;
+    }
+
+    public void setConsultasAnteriores(List<Consulta> consultasAnteriores) {
+        this.consultasAnteriores = consultasAnteriores;
+    }
+
+    public void addConsultaAnterior(Consulta consultaAnterior) {
+        this.consultasAnteriores.add(consultaAnterior);
     }
 }

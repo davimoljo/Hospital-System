@@ -1,7 +1,7 @@
 package view.eventos;
 
 import sistema.Hospital;
-import view.TelaCadastro;
+import view.telasDeUsuario.telaPaciente.TelaCadastro;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

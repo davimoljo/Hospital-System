@@ -105,4 +105,7 @@ public class Consulta {
         return prontuario;
     }
 
+    public boolean consultaJaRealizada(){
+        return LocalDate.now().isAfter(this.marcacao) || (LocalDate.now().isEqual(this.marcacao) && LocalTime.now().isAfter(this.hora));
+    }
 }

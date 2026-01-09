@@ -2,7 +2,10 @@ package sistema;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import sistema.documentos.DocumentoMedico;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import usuario.Paciente;
 
 import java.io.File;
@@ -13,7 +16,9 @@ import java.util.List;
 
 public class RegistraDocumento {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = JsonMapper.builder()
+            .addModule(new JavaTimeModule())
+            .build();
 
     public static void registrarConsultas (List<Consulta> consultas){
         File file = new File("src/main/java/sistema/docsDB/consultaDB.json");

@@ -7,13 +7,12 @@ import javax.swing.JOptionPane;
 
 import excessoes.SenhaIncorretaException;
 import excessoes.UsuarioInexistente;
-import excessoes.UsuarioJaExistente;
 import sistema.Hospital;
 import usuario.*;
 import usuario.validacoes.*;
 import view.*;
 import view.telasDeUsuario.medico.TelaMedico;
-import view.telasDeUsuario.TelaPaciente;
+import view.telasDeUsuario.telaPaciente.TelaPaciente;
 
 public class Logar implements ActionListener {
     private TelaLogin telaLogin;

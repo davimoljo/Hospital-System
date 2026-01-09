@@ -3,6 +3,8 @@ package usuario.userDB;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import excessoes.UsuarioInexistente;
 
 import java.io.File;
@@ -15,7 +17,9 @@ import usuario.Paciente;
 
 public class RepositorioDeUsuario {
     private static final File FILE = new File("src/main/java/usuario/userDB/userDatabase.json");
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = JsonMapper.builder()
+            .addModule(new JavaTimeModule())
+            .build();
 
     public static List<Usuario> carregarUsuarios() {
         try {

@@ -1,16 +1,1 @@
-[ {
-  "marcacao" : {
-    "dia" : 14,
-    "mes" : 12,
-    "ano" : 2026
-  },
-  "hora" : {
-    "hora" : 15,
-    "minuto" : 0
-  },
-  "nomePaciente" : "Jao",
-  "nomeMedico" : "Carlos",
-  "cpfPaciente" : "12345678901",
-  "cpfMedicoResponsavel" : "12345678900",
-  "especialidade" : "ENDOCRINOLOGISTA"
-} ]
+[ ]
