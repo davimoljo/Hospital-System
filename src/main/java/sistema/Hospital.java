@@ -6,6 +6,7 @@ import excessoes.ProntuarioJaExistente;
 import excessoes.UsuarioJaExistente;
 import sistema.documentos.Atestado;
 import sistema.documentos.DocumentoMedico;
+import sistema.documentos.Exame;
 import sistema.documentos.Receita;
 import usuario.*;
 import usuario.userDB.RepositorioDeUsuario;
@@ -104,6 +105,18 @@ public class Hospital {
         return achados;
     }
 
+    public List<Usuario> procurarUsuariosPorNome(String nome) {
+        List<Usuario> achados = new ArrayList<>();
+        String nomeF = nome.toLowerCase();
+        for (Usuario usuario : usuarios) {
+            if (usuario.getNome().toLowerCase().contains(nomeF)) {
+                achados.add(usuario);
+            }
+        }
+
+        return achados;
+    }
+
     public Paciente buscarPacientePorCPF(String cpf) {
         for (Usuario u : usuarios) {
             if (u.getCpf().equals(cpf) && u instanceof Paciente)
@@ -121,17 +134,27 @@ public class Hospital {
         return null;
     }
 
-    public DocumentoMedico gerarAtestado(Paciente p, Medico m, LocalDate termino) {
-        DocumentoMedico atestado = new Atestado(p, m, termino);
+    public DocumentoMedico gerarAtestado(Paciente p, Medico m, LocalDate dataCriacao, int diaDeAfastamento) {
+        DocumentoMedico atestado = new Atestado(p.getNome(), m.getNome(), p.getCpf(), m.getCpf(), dataCriacao, diaDeAfastamento);
+        p.addDocumento(atestado);
         documentos.add(atestado);
         return atestado;
     }
 
-    public DocumentoMedico gerarRececita(Paciente p, Medico m, List<Medicamento> medicamentos) {
-        DocumentoMedico receita = new Receita(p, m);
+    public DocumentoMedico gerarRececita(Paciente p, Medico m, LocalDate dataCriacao, String observacoes) {
+        DocumentoMedico receita = new Receita(p.getNome(), m.getNome(), p.getCpf(), m.getCpf(), dataCriacao, observacoes);
+        p.addDocumento(receita);
         documentos.add(receita);
         return receita;
     }
+
+    public DocumentoMedico gerarExame(Paciente p, Medico m, LocalDate dataCriacao, String resultado) {
+        DocumentoMedico exame = new Exame(p.getNome(), m.getNome(), p.getCpf(), m.getCpf(), dataCriacao, resultado);
+        p.addDocumento(exame);
+        documentos.add(exame);
+        return exame;
+    }
+
 
     public Consulta marcarConsulta(Paciente p, Medico m, LocalDate marcacao, LocalTime hora)
             throws DataIndisponivel, MedicoDesativado {

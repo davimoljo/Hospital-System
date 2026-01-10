@@ -23,8 +23,41 @@
   "convenio" : "Unimed",
   "prontuario" : null,
   "consultasMarcadas" : [ ],
-  "consultasAnteriores" : [ ],
-  "internado" : false,
-  "aptoAVisitas" : false,
+  "consultasAnteriores" : [ {
+    "marcacao" : [ 2026, 1, 9 ],
+    "hora" : [ 19, 28 ],
+    "prontuario" : null,
+    "nomePaciente" : "João",
+    "nomeMedico" : "Gabriel",
+    "cpfPaciente" : "12345678901",
+    "cpfMedicoResponsavel" : "12345678911",
+    "especialidade" : "NEUROLOGISTA"
+  } ],
+  "documentos" : null,
+  "internado" : true,
+  "aptoAVisitas" : true,
   "tipoUsuario" : "PACIENTE"
+}, {
+  "nome" : "Gabriel",
+  "cpf" : "12345678911",
+  "senha" : "12345",
+  "email" : "gabriekl",
+  "telefone" : null,
+  "tipo" : "MEDICO",
+  "crm" : "124321",
+  "especialidade" : "NEUROLOGISTA",
+  "ativo" : true,
+  "consultasMarcadas" : [ {
+    "marcacao" : [ 2026, 1, 9 ],
+    "hora" : [ 19, 28 ],
+    "prontuario" : null,
+    "nomePaciente" : "João",
+    "nomeMedico" : "Gabriel",
+    "cpfPaciente" : "12345678901",
+    "cpfMedicoResponsavel" : "12345678911",
+    "especialidade" : "NEUROLOGISTA"
+  } ],
+  "horaInicioExpediente" : [ 1, 0 ],
+  "horaFimExpediente" : [ 23, 0 ],
+  "tipoUsuario" : "MEDICO"
 } ]

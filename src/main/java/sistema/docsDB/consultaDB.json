@@ -1,1 +1,10 @@
-[ ]
+[ {
+  "marcacao" : [ 2026, 1, 9 ],
+  "hora" : [ 19, 28 ],
+  "prontuario" : null,
+  "nomePaciente" : "João",
+  "nomeMedico" : "Gabriel",
+  "cpfPaciente" : "12345678901",
+  "cpfMedicoResponsavel" : "12345678911",
+  "especialidade" : "NEUROLOGISTA"
+} ]

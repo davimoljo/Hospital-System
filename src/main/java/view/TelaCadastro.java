@@ -1,4 +1,4 @@
-package view.telasDeUsuario.telaPaciente;
+package view;
 
 import excessoes.HoraInvalida;
 import excessoes.UsuarioJaExistente;
