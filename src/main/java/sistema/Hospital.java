@@ -151,7 +151,7 @@ public class Hospital {
         return atestado;
     }
 
-    public DocumentoMedico gerarRececita(Paciente p, Medico m, LocalDate dataCriacao, String observacoes) {
+    public DocumentoMedico gerarReceita(Paciente p, Medico m, LocalDate dataCriacao, String observacoes) {
         DocumentoMedico receita = new Receita(p.getNome(), m.getNome(), p.getCpf(), m.getCpf(), dataCriacao,
                 observacoes);
         p.addDocumento(receita);

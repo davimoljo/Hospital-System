@@ -14,6 +14,7 @@ import utilitarios.Medicamento;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -336,10 +337,9 @@ public class TelaMedico extends JFrame {
                 JOptionPane.OK_CANCEL_OPTION);
 
         if (op == JOptionPane.OK_OPTION && !txtReceita.getText().isBlank()) {
-            List<Medicamento> listaMeds = new ArrayList<>();
-            listaMeds.add(new Medicamento(txtReceita.getText()));
+            String obs = txtReceita.getText();
 
-            String recibo = hospital.gerarReceita(p, medico, listaMeds).gerarConteudo();
+            String recibo = hospital.gerarReceita(p, medico, LocalDate.now(), obs).gerarConteudo();
             JOptionPane.showMessageDialog(this, "Receita gerada:\n" + recibo);
         }
     }
@@ -349,7 +349,7 @@ public class TelaMedico extends JFrame {
         if (diasStr != null) {
             try {
                 int dias = Integer.parseInt(diasStr);
-                String recibo = hospital.gerarAtestado(p, medico, java.time.LocalDate.now().plusDays(dias))
+                String recibo = hospital.gerarAtestado(p, medico, java.time.LocalDate.now().plusDays(dias), dias)
                         .gerarConteudo();
                 JOptionPane.showMessageDialog(this, "Atestado gerado:\n" + recibo);
             } catch (NumberFormatException e) {
@@ -361,7 +361,7 @@ public class TelaMedico extends JFrame {
     private void emitirExame(Paciente p) {
         String resultado = JOptionPane.showInputDialog(this, "Descreva o resultado/solicitação do exame:");
         if (resultado != null && !resultado.isBlank()) {
-            String recibo = hospital.gerarExame(p, medico, resultado).gerarConteudo();
+            String recibo = hospital.gerarExame(p, medico, LocalDate.now(), resultado).gerarConteudo();
             JOptionPane.showMessageDialog(this, "Exame registrado:\n" + recibo);
         }
     }
