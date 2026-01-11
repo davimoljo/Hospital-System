@@ -21,11 +21,11 @@ public class Atestado extends DocumentoMedico {
 
     @Override
     public String gerarConteudo() {
-        // 1. Configura a formatação da data para ficar "bonita" (DD/MM/AAAA)
+        // Configura a formatação da data para ficar (DD/MM/AAAA)
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataFormatada = this.dataCriacao.format(formatador);
 
-        // 2. Calcula a diferença de dias entre o início e o fim (se tiver dataTermino)
+        // Calcula a diferença de dias entre o início e o fim (se tiver dataTermino)
         // Se dataTermino for null, assumimos 1 dia.
         long diasDeAfastamento = 1;
         if (this.dataTermino != null) {
@@ -34,7 +34,6 @@ public class Atestado extends DocumentoMedico {
                 diasDeAfastamento = 1; // Mínimo de 1 dia
         }
 
-        // 3. Monta o texto preenchendo TODOS os campos na ordem certa
         this.conteudo = """
                 ATESTADO MÉDICO
 

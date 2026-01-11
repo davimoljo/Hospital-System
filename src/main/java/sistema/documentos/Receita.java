@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+// Classe concreta para receitas médicas
+
 public class Receita extends DocumentoMedico {
     private List<Medicamento> medicamentos;
     private String observacoes;

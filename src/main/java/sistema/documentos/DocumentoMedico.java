@@ -12,6 +12,7 @@ import java.time.*;
         @JsonSubTypes.Type(value = Exame.class, name = "exame")
 })
 
+// Classe abstrata para documentos médicos
 public abstract class DocumentoMedico {
     private String id;
     protected String conteudo;

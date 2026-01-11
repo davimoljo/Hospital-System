@@ -20,6 +20,8 @@ import sistema.Prontuario;
 import usuario.Medico;
 import usuario.Paciente;
 
+// Classe para ações realizadas pelo médico na interface gráfica
+
 public class AcoesMedico {
 
     private final Hospital hospital;
@@ -32,6 +34,7 @@ public class AcoesMedico {
         this.viewParent = viewParent;
     }
 
+    // Retorna a consulta selecionada na tabela de agenda
     public Consulta getConsultaSelecionada(JTable tabelaAgenda, List<Consulta> consultasExibidas) {
         int linha = tabelaAgenda.getSelectedRow();
         if (linha == -1)
@@ -39,6 +42,7 @@ public class AcoesMedico {
         return consultasExibidas.get(linha);
     }
 
+    // Atualiza a tabela de agenda do médico com as consultas marcadas
     public void atualizarTabelaAgenda(DefaultTableModel modelAgenda, List<Consulta> consultasExibidas) {
         modelAgenda.setRowCount(0);
         consultasExibidas.clear();
@@ -68,6 +72,7 @@ public class AcoesMedico {
             });
         }
     }
+    // Mostrar o histórico médico de um paciente
 
     public void mostrarHistoricoPaciente(Paciente paciente) {
         if (paciente == null)
@@ -96,6 +101,8 @@ public class AcoesMedico {
         }
     }
 
+    // Gerenciar internação de um paciente com base no prontuário
+
     public void gerenciarInternacao(Paciente paciente, Prontuario prontuario) {
         String estadoAtual = paciente.isInternado() ? "INTERNADO" : "NÃO INTERNADO";
         String msg = "Status Doença: " + prontuario.getStatus() + "\nEstado Atual: " + estadoAtual;
@@ -109,6 +116,8 @@ public class AcoesMedico {
             JOptionPane.showMessageDialog(viewParent, "Status de internação alterado com sucesso.");
         }
     }
+
+    // Emissão de documentos médicos
 
     public void emitirReceita(Paciente p) {
         JTextArea txtReceita = new JTextArea(8, 30);

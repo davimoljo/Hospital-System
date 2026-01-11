@@ -7,6 +7,8 @@ import utilitarios.StatusDoenca;
 
 import java.time.*;
 
+// Classe para consultas médicas
+
 public class Consulta {
     private LocalDate marcacao;
     private LocalTime hora;
@@ -51,6 +53,7 @@ public class Consulta {
         return detalhes;
     }
 
+    // Funções Getters e Setters
     public String getCpfMedicoResponsavel() {
         return cpfMedicoResponsavel;
     }

@@ -65,7 +65,6 @@ public class TelaPaciente extends JFrame {
         modelConsultas = new DefaultTableModel(colunasConsultas, 0);
         this.tabelaConsultas = new JTable(modelConsultas);
 
-        // Simulação de preenchimento (ajuste conforme seus métodos de Paciente)
         atualizarTabelaConsultas();
 
         JPanel painelBotoesConsultas = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -157,7 +156,7 @@ public class TelaPaciente extends JFrame {
         DefaultTableModel consultasAntModel = new DefaultTableModel(colunasConsultas, 0);
         JTable consultasAntList = new JTable(consultasAntModel);
         consultasAntList.setFillsViewportHeight(true);
-        consultasAntList.setRowHeight(25); // Linhas mais altas para melhor leitura
+        consultasAntList.setRowHeight(25);
         painelEsquerdo.add(new JScrollPane(consultasAntList), BorderLayout.CENTER);
         carregarConsultasAnteriores(consultasAntModel);
 
@@ -342,6 +341,8 @@ public class TelaPaciente extends JFrame {
             });
         }
     }
+
+    // funções auxiliares da tela paciente
 
     private void gerarProntuario(JTextArea previewProntuario, JTable consultasAntList) {
         previewProntuario.removeAll();

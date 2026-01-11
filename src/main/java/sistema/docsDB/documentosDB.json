@@ -1,1 +1,15 @@
-[ ]
+[ {
+  "tipoDocumento" : "atestado",
+  "id" : null,
+  "dataCriacao" : [ 2026, 1, 16 ],
+  "dataTermino" : [ 2026, 1, 21 ],
+  "pacienteRelacionado" : "JSDFKSDJF"
+}, {
+  "tipoDocumento" : "receita",
+  "id" : null,
+  "dataCriacao" : [ 2026, 1, 11 ]
+}, {
+  "tipoDocumento" : "exame",
+  "id" : null,
+  "dataCriacao" : [ 2026, 1, 11 ]
+} ]

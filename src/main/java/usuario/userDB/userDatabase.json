@@ -1,1 +1,66 @@
-[ ]
+[ {
+  "nome" : "sdfsdf",
+  "cpf" : "22222222222",
+  "senha" : "1234",
+  "email" : "aSDASD",
+  "telefone" : null,
+  "tipo" : "MEDICO",
+  "crm" : "123124",
+  "especialidade" : "CARDIOLOGISTA",
+  "ativo" : true,
+  "consultasMarcadas" : [ ],
+  "duracaoDasConsultas" : 30,
+  "expediente" : {
+    "FRIDAY" : {
+      "inicio" : [ 13, 0 ],
+      "fim" : [ 18, 0 ]
+    },
+    "MONDAY" : {
+      "inicio" : [ 13, 0 ],
+      "fim" : [ 18, 0 ]
+    },
+    "WEDNESDAY" : {
+      "inicio" : [ 13, 0 ],
+      "fim" : [ 18, 0 ]
+    },
+    "TUESDAY" : {
+      "inicio" : [ 13, 0 ],
+      "fim" : [ 18, 0 ]
+    },
+    "THURSDAY" : {
+      "inicio" : [ 13, 0 ],
+      "fim" : [ 18, 0 ]
+    }
+  },
+  "tipoUsuario" : "MEDICO"
+}, {
+  "nome" : "JSDFKSDJF",
+  "cpf" : "11111111111",
+  "senha" : "1234",
+  "email" : "DSDFSDF",
+  "telefone" : null,
+  "tipo" : "PACIENTE",
+  "endereco" : null,
+  "convenio" : "123123",
+  "prontuario" : null,
+  "consultasMarcadas" : [ ],
+  "consultasAnteriores" : [ ],
+  "documentos" : [ {
+    "tipoDocumento" : "atestado",
+    "id" : null,
+    "dataCriacao" : [ 2026, 1, 16 ],
+    "dataTermino" : [ 2026, 1, 21 ],
+    "pacienteRelacionado" : "JSDFKSDJF"
+  }, {
+    "tipoDocumento" : "receita",
+    "id" : null,
+    "dataCriacao" : [ 2026, 1, 11 ]
+  }, {
+    "tipoDocumento" : "exame",
+    "id" : null,
+    "dataCriacao" : [ 2026, 1, 11 ]
+  } ],
+  "internado" : false,
+  "aptoAVisitas" : false,
+  "tipoUsuario" : "PACIENTE"
+} ]

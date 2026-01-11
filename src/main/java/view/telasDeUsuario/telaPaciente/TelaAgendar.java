@@ -28,18 +28,17 @@ public class TelaAgendar extends JFrame {
         this.paciente = paciente;
         this.telaPaciente = telaPaciente;
         setTitle("Agendar Nova Consulta");
-        setSize(600, 450); // Aumentado para acomodar melhor os componentes
+        setSize(600, 450);
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(telaPaciente);
         comboHorarios = new JComboBox<>();
         comboHorarios.setEnabled(false);
 
-        // Cores e Fontes (seguindo o padrão da TelaPaciente)
         Color corFundo = new Color(245, 245, 245);
         Font fonteLabel = new Font("Segue UI", Font.BOLD, 14);
 
-        // --- PAINEL ESQUERDO (Configurações) ---
+        // configurações do painel esquerdo
         painelEsquerdo = new JPanel(new GridBagLayout());
         painelEsquerdo.setBorder(BorderFactory.createTitledBorder("Detalhes da Consulta"));
         painelEsquerdo.setPreferredSize(new Dimension(250, 0));
@@ -68,7 +67,7 @@ public class TelaAgendar extends JFrame {
         gbc.insets = new Insets(20, 10, 5, 10);
         painelEsquerdo.add(procurarMedicos, gbc);
 
-        // --- PAINEL DIREITO (Seleção de Médico) ---
+        // painel da direita
         painelDireito = new JPanel(new BorderLayout(5, 5));
         painelDireito.setBorder(BorderFactory.createTitledBorder("Médicos Disponíveis"));
 
@@ -85,7 +84,7 @@ public class TelaAgendar extends JFrame {
         JScrollPane scrollMedicos = new JScrollPane(listaMedicosDisponiveis);
         painelDireito.add(scrollMedicos, BorderLayout.CENTER);
 
-        // --- PAINEL INFERIOR (Ações) ---
+        // painel inferior
         painelBotoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         painelBotoes.setBackground(corFundo);
         painelBotoes.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -100,7 +99,7 @@ public class TelaAgendar extends JFrame {
 
         painelBotoes.add(botaoAgendar);
 
-        // --- ADICIONANDO AO FRAME PRINCIPAL ---
+        // adicionando painéis à janela
         JPanel painelCentral = new JPanel(new GridLayout(1, 2, 10, 0));
         painelCentral.setBorder(new EmptyBorder(10, 10, 10, 10));
         painelCentral.add(painelEsquerdo);
@@ -133,7 +132,7 @@ public class TelaAgendar extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             modelMedico.clear();
-            comboHorarios.removeAllItems(); // LIMPEZA: Limpa os horários antigos se houver
+            comboHorarios.removeAllItems(); // Limpa os horários antigos se houver
 
             String[] dataF = data.getText().split("/");
             Integer[] dataI = new Integer[3];
@@ -142,7 +141,7 @@ public class TelaAgendar extends JFrame {
             if (dataF.length != 3) {
                 JOptionPane.showMessageDialog(telaAgendar, "Formato Data inválido", "Erro de formato",
                         JOptionPane.ERROR_MESSAGE);
-                return; // IMPORTANTE: Adicione return para parar se der erro
+                return;
             }
             try {
                 int i = 0;
@@ -156,17 +155,14 @@ public class TelaAgendar extends JFrame {
                 return;
             }
             try {
-                // Atualizamos a variável global 'd' aqui
                 d = LocalDate.of(dataI[0], dataI[1], dataI[2]);
 
-                // CORREÇÃO: Removi o "isEqual(d)". Se for igual a hoje, DEVE permitir (para
-                // marcar pro final do dia)
                 if (LocalDate.now().isAfter(d)) {
                     JOptionPane.showMessageDialog(telaAgendar, "Impossível marcar uma consulta no passado!", "Erro",
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-            } catch (DateTimeException invalida) { // Removi HoraInvalida/DataInvalida pois são do Java Time
+            } catch (DateTimeException invalida) {
                 JOptionPane.showMessageDialog(telaAgendar, "Data inválida", "Erro de formato",
                         JOptionPane.ERROR_MESSAGE);
                 return;
@@ -181,7 +177,7 @@ public class TelaAgendar extends JFrame {
                 }
             }
 
-            // Dica visual se não achar ninguém
+            // Se nenhum médico encontrado
             if (modelMedico.isEmpty()) {
                 JOptionPane.showMessageDialog(telaAgendar, "Nenhum médico atende nesta data/especialidade.");
             }

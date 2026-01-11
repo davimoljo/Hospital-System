@@ -2,6 +2,8 @@ package sistema.documentos;
 
 import java.time.LocalDate;
 
+// Classe concreta para exames médicos
+
 public class Exame extends DocumentoMedico {
     private String resultado;
 

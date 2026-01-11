@@ -21,6 +21,8 @@ public class Hospital {
     private List<Prontuario> prontuarios;
     private List<Consulta> consultasMarcadas;
 
+    // Construtor do Hospital que carrega os dados salvos
+
     public Hospital() {
         usuarios = RepositorioDeUsuario.carregarUsuarios();
         documentos = RegistraDocumento.leDocumentos();
@@ -48,6 +50,8 @@ public class Hospital {
                 ((Paciente) pacienteOficial).agendarConsulta(c);
         }
     }
+
+    // Funções de fechamento do sistema, salvando os dados atuais
 
     public void fechar() {
         RegistraDocumento.registrarConsultas(consultasMarcadas);

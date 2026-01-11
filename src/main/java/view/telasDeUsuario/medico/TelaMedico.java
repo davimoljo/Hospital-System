@@ -15,6 +15,8 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+// Tela principal do médico no sistema hospitalar
+
 public class TelaMedico extends JFrame {
 
     private Medico medico;
@@ -158,6 +160,8 @@ public class TelaMedico extends JFrame {
                 btnExame.setEnabled(temSelecao);
             }
         });
+
+        // botões de ação
 
         btnAtualizar.addActionListener(ev -> acoes.atualizarTabelaAgenda(modelAgenda, consultasExibidas));
 
