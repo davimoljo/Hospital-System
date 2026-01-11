@@ -11,15 +11,7 @@
   "consultasMarcadas" : [ ],
   "duracaoDasConsultas" : 30,
   "expediente" : {
-    "FRIDAY" : {
-      "inicio" : [ 13, 0 ],
-      "fim" : [ 18, 0 ]
-    },
-    "MONDAY" : {
-      "inicio" : [ 13, 0 ],
-      "fim" : [ 18, 0 ]
-    },
-    "WEDNESDAY" : {
+    "THURSDAY" : {
       "inicio" : [ 13, 0 ],
       "fim" : [ 18, 0 ]
     },
@@ -27,7 +19,15 @@
       "inicio" : [ 13, 0 ],
       "fim" : [ 18, 0 ]
     },
-    "THURSDAY" : {
+    "FRIDAY" : {
+      "inicio" : [ 13, 0 ],
+      "fim" : [ 18, 0 ]
+    },
+    "WEDNESDAY" : {
+      "inicio" : [ 13, 0 ],
+      "fim" : [ 18, 0 ]
+    },
+    "MONDAY" : {
       "inicio" : [ 13, 0 ],
       "fim" : [ 18, 0 ]
     }

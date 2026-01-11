@@ -7,6 +7,10 @@ import java.time.LocalDate;
 public class Exame extends DocumentoMedico {
     private String resultado;
 
+    public Exame() {
+
+    }
+
     public Exame(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico, LocalDate dataCriacao,
             String resultado) {
         super(nomePaciente, nomeMedico, cpfPaciente, cpfMedico, dataCriacao);

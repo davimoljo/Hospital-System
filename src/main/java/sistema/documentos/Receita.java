@@ -12,6 +12,10 @@ public class Receita extends DocumentoMedico {
     private List<Medicamento> medicamentos;
     private String observacoes;
 
+    public Receita() {
+
+    }
+
     public Receita(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico, LocalDate dataCriacao,
             String observacoes) {
         super(nomePaciente, nomeMedico, cpfPaciente, cpfMedico, dataCriacao);
