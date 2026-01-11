@@ -8,7 +8,16 @@
   "crm" : "1235432",
   "especialidade" : "ENDOCRINOLOGISTA",
   "ativo" : true,
-  "consultasMarcadas" : [ ],
+  "consultasMarcadas" : [ {
+    "marcacao" : [ 2026, 1, 30 ],
+    "hora" : [ 16, 0 ],
+    "prontuario" : null,
+    "nomePaciente" : "João",
+    "nomeMedico" : "Carlos",
+    "cpfPaciente" : "12345678901",
+    "cpfMedicoResponsavel" : "12345678900",
+    "especialidade" : "ENDOCRINOLOGISTA"
+  } ],
   "horaInicioExpediente" : [ 14, 0 ],
   "horaFimExpediente" : [ 18, 0 ],
   "tipoUsuario" : "MEDICO"
@@ -17,12 +26,21 @@
   "cpf" : "12345678901",
   "senha" : "12345",
   "email" : "joao@gmail.com",
-  "telefone" : null,
+  "telefone" : "",
   "tipo" : "PACIENTE",
-  "endereco" : null,
-  "convenio" : "Unimed",
+  "endereco" : "",
+  "convenio" : "Buddyson",
   "prontuario" : null,
-  "consultasMarcadas" : [ ],
+  "consultasMarcadas" : [ {
+    "marcacao" : [ 2026, 1, 30 ],
+    "hora" : [ 16, 0 ],
+    "prontuario" : null,
+    "nomePaciente" : "João",
+    "nomeMedico" : "Carlos",
+    "cpfPaciente" : "12345678901",
+    "cpfMedicoResponsavel" : "12345678900",
+    "especialidade" : "ENDOCRINOLOGISTA"
+  } ],
   "consultasAnteriores" : [ {
     "marcacao" : [ 2026, 1, 9 ],
     "hora" : [ 19, 28 ],
@@ -33,7 +51,7 @@
     "cpfMedicoResponsavel" : "12345678911",
     "especialidade" : "NEUROLOGISTA"
   } ],
-  "documentos" : null,
+  "documentos" : [ ],
   "internado" : true,
   "aptoAVisitas" : true,
   "tipoUsuario" : "PACIENTE"
@@ -59,5 +77,19 @@
   } ],
   "horaInicioExpediente" : [ 1, 0 ],
   "horaFimExpediente" : [ 23, 0 ],
+  "tipoUsuario" : "MEDICO"
+}, {
+  "nome" : "Hilda Machadinho",
+  "cpf" : "01234567890",
+  "senha" : "Hilda#16",
+  "email" : "hilda.machadinho@buddymail.com",
+  "telefone" : null,
+  "tipo" : "MEDICO",
+  "crm" : "batata",
+  "especialidade" : "DERMATOLOGISTA",
+  "ativo" : true,
+  "consultasMarcadas" : [ ],
+  "horaInicioExpediente" : [ 13, 0 ],
+  "horaFimExpediente" : [ 18, 0 ],
   "tipoUsuario" : "MEDICO"
 } ]

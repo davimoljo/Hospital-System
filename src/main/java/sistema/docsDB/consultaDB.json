@@ -7,4 +7,13 @@
   "cpfPaciente" : "12345678901",
   "cpfMedicoResponsavel" : "12345678911",
   "especialidade" : "NEUROLOGISTA"
+}, {
+  "marcacao" : [ 2026, 1, 30 ],
+  "hora" : [ 16, 0 ],
+  "prontuario" : null,
+  "nomePaciente" : "João",
+  "nomeMedico" : "Carlos",
+  "cpfPaciente" : "12345678901",
+  "cpfMedicoResponsavel" : "12345678900",
+  "especialidade" : "ENDOCRINOLOGISTA"
 } ]

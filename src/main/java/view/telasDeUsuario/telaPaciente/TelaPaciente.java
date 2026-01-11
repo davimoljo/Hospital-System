@@ -43,8 +43,17 @@ public class TelaPaciente extends JFrame {
         JLabel lblInfo = new JLabel("CPF: " + paciente.getCpf());
         lblInfo.setFont(new Font("Segue UI", Font.ITALIC, 13));
 
+        JButton configurarUsuario = new JButton("Configurar");
+        configurarUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirTelaConfiguracao(paciente);
+            }
+        });
+
         topo.add(lblPaciente, BorderLayout.WEST);
         topo.add(lblInfo, BorderLayout.EAST);
+        topo.add(configurarUsuario, BorderLayout.EAST);
 
         // ===== ABAS =====
         JTabbedPane abas = new JTabbedPane();
@@ -378,7 +387,12 @@ public class TelaPaciente extends JFrame {
     }
 
     private void visualizarDocumento(JTextArea previewDocumento, JTable listaDocumento){
-        DocumentoMedico documento = paciente.getDocumentos().get(listaDocumento.getSelectedRow());
+        int index = listaDocumento.getSelectedRow();
+        if(index == -1){
+            JOptionPane.showMessageDialog(this, "Nenhum documento selecionado", "Nenhum documento", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        DocumentoMedico documento = paciente.getDocumentos().get(index);
         if (documento instanceof Atestado atestado)
             previewDocumento.append(atestado.toString());
         else if (documento instanceof Exame exame)
@@ -389,7 +403,12 @@ public class TelaPaciente extends JFrame {
     }
 
     private void atualizarTabelaDocumento(DefaultTableModel modelDocs){
-        for (DocumentoMedico documento : paciente.getDocumentos()){
+        modelDocs.setRowCount(0);
+        List<DocumentoMedico> lista = paciente.getDocumentos();
+        if (lista.isEmpty()){
+            return;
+        }
+        for (DocumentoMedico documento : lista){
             String tipo;
             if (documento instanceof Atestado atestado){
                 tipo = "Atestado";
@@ -407,5 +426,11 @@ public class TelaPaciente extends JFrame {
                 documento.getData().toString(),
             });
         }
+    }
+
+    private void abrirTelaConfiguracao (Paciente paciente){
+        TelaConfiguracaoPaciente telaConfiguracaoPaciente = new TelaConfiguracaoPaciente(paciente, this);
+        telaConfiguracaoPaciente.setVisible(true);
+        this.setVisible(false);
     }
 }
