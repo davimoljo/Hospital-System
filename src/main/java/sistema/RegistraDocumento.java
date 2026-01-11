@@ -7,6 +7,7 @@ import sistema.documentos.DocumentoMedico;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +71,17 @@ public class RegistraDocumento {
         File file = new File(caminho);
 
         if (!file.exists() || file.length() == 0) {
+
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                System.err.println("Impossivel criar arquivo de armazenamaneto de documentos.");
+            }
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write("[]");
+            } catch (IOException e) {
+                System.err.println("Erro ao criar arquivo no banco de dados.");
+            }
             return new ArrayList<>();
         }
 
