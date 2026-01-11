@@ -1,6 +1,7 @@
 package view.telasDeUsuario.recepcionista;
 
 import usuario.Medico;
+import usuario.userDB.RepositorioDeUsuario;
 import usuario.Especialidade;
 import sistema.Hospital; // Ajuste o import conforme seu pacote
 
@@ -16,9 +17,8 @@ import java.util.Map;
 public class TelaEditarMedico extends JFrame {
 
     private Medico medico;
-    private Hospital hospital; // Caso precise salvar no banco/arquivo ao fechar
+    private Hospital hospital;
 
-    // Mapeia o dia da semana para os campos de texto (Inicio e Fim) correspondentes
     private Map<DayOfWeek, JTextField[]> camposHorarios = new HashMap<>();
 
     private JTextField txtNome;
@@ -34,12 +34,10 @@ public class TelaEditarMedico extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // --- PAINEL SUPERIOR (Dados Básicos) ---
         JPanel painelDados = new JPanel(new GridLayout(3, 2, 5, 5));
         painelDados.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         txtNome = new JTextField(medico.getNome());
-        // CRM geralmente não se edita, então mostramos como Label ou desabilitado
         JTextField txtCrm = new JTextField(medico.getCrm());
         txtCrm.setEditable(false);
 
@@ -53,14 +51,12 @@ public class TelaEditarMedico extends JFrame {
         painelDados.add(new JLabel("Especialidade:"));
         painelDados.add(comboEspecialidade);
 
-        // --- PAINEL CENTRAL (Horários) ---
         JPanel painelHorarios = new JPanel(new GridBagLayout());
         painelHorarios.setBorder(BorderFactory.createTitledBorder("Agenda Semanal (Deixe em branco para folga)"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Cabeçalho da Tabela
         gbc.gridy = 0;
         gbc.gridx = 0;
         painelHorarios.add(new JLabel("Dia"), gbc);
@@ -69,21 +65,16 @@ public class TelaEditarMedico extends JFrame {
         gbc.gridx = 2;
         painelHorarios.add(new JLabel("Fim (HH:MM)"), gbc);
 
-        // Gera uma linha para cada dia da semana
         int linha = 1;
         for (DayOfWeek dia : DayOfWeek.values()) {
             gbc.gridy = linha;
             gbc.gridx = 0;
             painelHorarios.add(new JLabel(traduzirDia(dia)), gbc);
 
-            // Tenta pegar o horário atual desse dia (se existir)
             String horaInicio = "";
             String horaFim = "";
 
-            // Verifica se o médico trabalha nesse dia atualmente
             if (medico.dentroDoExpediente(LocalTime.of(12, 0), dia) || medico.getHoraInicioExpediente(dia) != null) {
-                // Obs: O ideal é ter um getter direto do mapa, mas vamos usar o getter que
-                // criamos
                 LocalTime inicio = medico.getHoraInicioExpediente(dia);
                 LocalTime fim = medico.getHoraFimExpediente(dia);
 
@@ -101,12 +92,9 @@ public class TelaEditarMedico extends JFrame {
             gbc.gridx = 2;
             painelHorarios.add(txtFim, gbc);
 
-            // Guarda referência para salvar depois
             camposHorarios.put(dia, new JTextField[] { txtInicio, txtFim });
             linha++;
         }
-
-        // --- PAINEL INFERIOR (Botões) ---
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton btnSalvar = new JButton("Salvar Alterações");
         JButton btnCancelar = new JButton("Cancelar");
@@ -117,12 +105,10 @@ public class TelaEditarMedico extends JFrame {
         painelBotoes.add(btnCancelar);
         painelBotoes.add(btnSalvar);
 
-        // --- AÇÕES ---
         btnCancelar.addActionListener(e -> dispose());
 
         btnSalvar.addActionListener(e -> salvarAlteracoes());
 
-        // Adiciona tudo ao Frame
         add(painelDados, BorderLayout.NORTH);
         add(new JScrollPane(painelHorarios), BorderLayout.CENTER);
         add(painelBotoes, BorderLayout.SOUTH);
@@ -130,17 +116,8 @@ public class TelaEditarMedico extends JFrame {
 
     private void salvarAlteracoes() {
         try {
-            // 1. Atualiza dados básicos
-            // (Assumindo que sua classe Medico tem setters para isso, se não tiver, pule)
-            // medico.setNome(txtNome.getText());
-            // medico.setEspecialidade((Especialidade)
-            // comboEspecialidade.getSelectedItem());
-
-            // 2. Atualiza Horários
-            // Precisamos acessar o mapa do médico. O ideal seria um método
-            // 'limparHorarios()' no Medico
-            // ou setar um novo mapa. Vamos supor que você crie um método 'setExpediente' no
-            // Medico.
+            medico.setNome(txtNome.getText());
+            medico.setEspecialidade((Especialidade) comboEspecialidade.getSelectedItem());
 
             Map<DayOfWeek, Medico.HorarioExpediente> novoExpediente = new HashMap<>();
 
@@ -149,7 +126,6 @@ public class TelaEditarMedico extends JFrame {
                 String sInicio = campos[0].getText().trim();
                 String sFim = campos[1].getText().trim();
 
-                // Se ambos os campos tiverem texto, adiciona ao mapa
                 if (!sInicio.isEmpty() && !sFim.isEmpty()) {
                     LocalTime hInicio = LocalTime.parse(sInicio);
                     LocalTime hFim = LocalTime.parse(sFim);
@@ -163,8 +139,9 @@ public class TelaEditarMedico extends JFrame {
                 // Se estiver vazio, simplesmente não adiciona (o médico não trabalha nesse dia)
             }
 
-            // ATENÇÃO: Você precisa adicionar este método 'setExpediente' na classe Medico
             medico.setExpediente(novoExpediente);
+
+            RepositorioDeUsuario.registrarUsuarios(hospital.getUsuarios());
 
             JOptionPane.showMessageDialog(this, "Médico atualizado com sucesso!");
             dispose();
@@ -174,9 +151,9 @@ public class TelaEditarMedico extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar: " + ex.getMessage());
         }
+
     }
 
-    // Utilitário simples para traduzir ENUM para Português
     private String traduzirDia(DayOfWeek dia) {
         switch (dia) {
             case MONDAY:

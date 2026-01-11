@@ -4,29 +4,23 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import sistema.Consulta;
-import sistema.Prontuario;
-import sistema.StatusDoenca;
 import sistema.Hospital;
 import usuario.Medico;
 import usuario.Paciente;
-import utilitarios.Medicamento;
+import utilitarios.StatusDoenca;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TelaMedico extends JFrame {
 
     private Medico medico;
     private Hospital hospital;
     private JFrame telaLogin;
-
-    // --- LISTAS E TABELAS ---
+    private AcoesMedico acoes;
     private JTable tabelaAgenda;
     private DefaultTableModel modelAgenda;
 
@@ -37,6 +31,7 @@ public class TelaMedico extends JFrame {
         this.hospital = hospital;
         this.telaLogin = telaLogin;
         this.consultasExibidas = new ArrayList<>();
+        acoes = new AcoesMedico(hospital, medico, this);
 
         // Configuração da Janela
         this.addWindowListener(new WindowAdapter() {
@@ -148,7 +143,7 @@ public class TelaMedico extends JFrame {
         add(topo, BorderLayout.NORTH);
         add(abas, BorderLayout.CENTER);
 
-        atualizarTabelaAgenda();
+        acoes.atualizarTabelaAgenda(modelAgenda, consultasExibidas);
 
         tabelaAgenda.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -164,10 +159,10 @@ public class TelaMedico extends JFrame {
             }
         });
 
-        btnAtualizar.addActionListener(ev -> atualizarTabelaAgenda());
+        btnAtualizar.addActionListener(ev -> acoes.atualizarTabelaAgenda(modelAgenda, consultasExibidas));
 
         btnCancelar.addActionListener(ev -> {
-            Consulta c = getConsultaSelecionada();
+            Consulta c = acoes.getConsultaSelecionada(tabelaAgenda, consultasExibidas);
             if (c == null)
                 return;
 
@@ -179,12 +174,12 @@ public class TelaMedico extends JFrame {
             if (confirm == JOptionPane.YES_OPTION) {
                 hospital.desmarcarConsulta(c); // Remove da lista global
                 JOptionPane.showMessageDialog(this, "Consulta cancelada.");
-                atualizarTabelaAgenda();
+                acoes.atualizarTabelaAgenda(modelAgenda, consultasExibidas);
             }
         });
 
         btnProntuario.addActionListener(ev -> {
-            Consulta c = getConsultaSelecionada();
+            Consulta c = acoes.getConsultaSelecionada(tabelaAgenda, consultasExibidas);
             if (c == null)
                 return;
 
@@ -202,167 +197,49 @@ public class TelaMedico extends JFrame {
             if (op == JOptionPane.OK_OPTION && !txtDoenca.getText().isBlank()) {
                 c.gerarProntuario(txtDoenca.getText(), (StatusDoenca) comboStatus.getSelectedItem());
                 JOptionPane.showMessageDialog(this, "Prontuário registrado com sucesso!");
-                atualizarTabelaAgenda();
+                acoes.atualizarTabelaAgenda(modelAgenda, consultasExibidas);
             }
         });
 
         btnHistorico.addActionListener(ev -> {
-            Consulta c = getConsultaSelecionada();
+            Consulta c = acoes.getConsultaSelecionada(tabelaAgenda, consultasExibidas);
             if (c != null) {
                 Paciente p = hospital.buscarPacientePorCPF(c.getCpfPaciente());
-                mostrarHistoricoPaciente(p);
+                acoes.mostrarHistoricoPaciente(p);
             }
         });
 
         btnInternacao.addActionListener(ev -> {
-            Consulta c = getConsultaSelecionada();
+            Consulta c = acoes.getConsultaSelecionada(tabelaAgenda, consultasExibidas);
             if (c != null) {
                 if (c.getProntuario() == null) {
                     JOptionPane.showMessageDialog(this, "Erro: Crie um prontuário antes de gerenciar internação.");
                     return;
                 }
                 Paciente p = hospital.buscarPacientePorCPF(c.getCpfPaciente());
-                gerenciarInternacao(p, c.getProntuario());
+                acoes.gerenciarInternacao(p, c.getProntuario());
             }
         });
 
         btnReceita.addActionListener(ev -> {
-            Consulta c = getConsultaSelecionada();
+            Consulta c = acoes.getConsultaSelecionada(tabelaAgenda, consultasExibidas);
             if (c != null) {
                 Paciente p = hospital.buscarPacientePorCPF(c.getCpfPaciente());
-                emitirReceita(p);
+                acoes.emitirReceita(p);
             }
         });
 
         btnAtestado.addActionListener(ev -> {
-            Consulta c = getConsultaSelecionada();
+            Consulta c = acoes.getConsultaSelecionada(tabelaAgenda, consultasExibidas);
             if (c != null)
-                emitirAtestado(hospital.buscarPacientePorCPF(c.getCpfPaciente()));
+                acoes.emitirAtestado(hospital.buscarPacientePorCPF(c.getCpfPaciente()));
         });
 
         btnExame.addActionListener(ev -> {
-            Consulta c = getConsultaSelecionada();
+            Consulta c = acoes.getConsultaSelecionada(tabelaAgenda, consultasExibidas);
             if (c != null)
-                emitirExame(hospital.buscarPacientePorCPF(c.getCpfPaciente()));
+                acoes.emitirExame(hospital.buscarPacientePorCPF(c.getCpfPaciente()));
         });
     }
 
-    private Consulta getConsultaSelecionada() {
-        int linha = tabelaAgenda.getSelectedRow();
-        if (linha == -1)
-            return null;
-        // Mapeia a linha visual para a lista de objetos
-        return consultasExibidas.get(linha);
-    }
-
-    private void atualizarTabelaAgenda() {
-        modelAgenda.setRowCount(0); // Limpa tabela visual
-        consultasExibidas.clear(); // Limpa lista de controle
-
-        DateTimeFormatter fmtData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter fmtHora = DateTimeFormatter.ofPattern("HH:mm");
-        List<Consulta> minhasConsultas = medico.getConsultasMarcadas().stream()
-                .sorted((c1, c2) -> {
-                    int dataComp = c1.getMarcacao().compareTo(c2.getMarcacao());
-                    if (dataComp != 0)
-                        return dataComp;
-                    return c1.getHora().compareTo(c2.getHora());
-                })
-                .collect(Collectors.toList());
-
-        for (Consulta c : minhasConsultas) {
-            consultasExibidas.add(c); // Guarda na lista para podermos clicar depois
-
-            String statusTexto = "Agendado";
-            if (c.getProntuario() != null) {
-                statusTexto = "Atendido (" + c.getProntuario().getStatus() + ")";
-            }
-
-            modelAgenda.addRow(new Object[] {
-                    c.getMarcacao().format(fmtData),
-                    c.getHora().format(fmtHora),
-                    c.getNomePaciente(),
-                    statusTexto
-            });
-        }
-    }
-
-    private void mostrarHistoricoPaciente(Paciente paciente) {
-        if (paciente == null)
-            return;
-
-        DefaultTableModel modelHist = new DefaultTableModel(new String[] { "Data", "Doença", "Status" }, 0);
-
-        for (Consulta c : paciente.getConsultasMarcadas()) {
-            if (c.getProntuario() != null) {
-                modelHist.addRow(new Object[] {
-                        c.getMarcacao(),
-                        c.getProntuario().getDoenca(),
-                        c.getProntuario().getStatus()
-                });
-            }
-        }
-
-        JTable tableHist = new JTable(modelHist);
-        JScrollPane scroll = new JScrollPane(tableHist);
-        scroll.setPreferredSize(new Dimension(400, 200));
-
-        if (modelHist.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Nenhum histórico médico encontrado para este paciente.");
-        } else {
-            JOptionPane.showMessageDialog(this, scroll, "Histórico: " + paciente.getNome(), JOptionPane.PLAIN_MESSAGE);
-        }
-    }
-
-    private void gerenciarInternacao(Paciente paciente, Prontuario prontuario) {
-        String estadoAtual = paciente.isInternado() ? "INTERNADO" : "NÃO INTERNADO";
-        String msg = "Status Doença: " + prontuario.getStatus() + "\nEstado Atual: " + estadoAtual;
-
-        String[] options = { paciente.isInternado() ? "Dar Alta" : "Solicitar Internação", "Cancelar" };
-
-        int choice = JOptionPane.showOptionDialog(this, msg, "Gestão de Internação",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-        if (choice == 0) {
-            paciente.alternarEstadoDeInternacao();
-            JOptionPane.showMessageDialog(this, "Status de internação alterado com sucesso.");
-        }
-    }
-
-    private void emitirReceita(Paciente p) {
-        JTextArea txtReceita = new JTextArea(8, 30);
-        txtReceita.setBorder(BorderFactory.createTitledBorder("Descreva os medicamentos e dosagem"));
-
-        int op = JOptionPane.showConfirmDialog(this, new JScrollPane(txtReceita), "Emitir Receita",
-                JOptionPane.OK_CANCEL_OPTION);
-
-        if (op == JOptionPane.OK_OPTION && !txtReceita.getText().isBlank()) {
-            String obs = txtReceita.getText();
-
-            String recibo = hospital.gerarReceita(p, medico, LocalDate.now(), obs).gerarConteudo();
-            JOptionPane.showMessageDialog(this, "Receita gerada:\n" + recibo);
-        }
-    }
-
-    private void emitirAtestado(Paciente p) {
-        String diasStr = JOptionPane.showInputDialog(this, "Atestado de quantos dias?");
-        if (diasStr != null) {
-            try {
-                int dias = Integer.parseInt(diasStr);
-                String recibo = hospital.gerarAtestado(p, medico, java.time.LocalDate.now().plusDays(dias), dias)
-                        .gerarConteudo();
-                JOptionPane.showMessageDialog(this, "Atestado gerado:\n" + recibo);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Digite um número válido.");
-            }
-        }
-    }
-
-    private void emitirExame(Paciente p) {
-        String resultado = JOptionPane.showInputDialog(this, "Descreva o resultado/solicitação do exame:");
-        if (resultado != null && !resultado.isBlank()) {
-            String recibo = hospital.gerarExame(p, medico, LocalDate.now(), resultado).gerarConteudo();
-            JOptionPane.showMessageDialog(this, "Exame registrado:\n" + recibo);
-        }
-    }
 }

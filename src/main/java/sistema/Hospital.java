@@ -2,7 +2,6 @@ package sistema;
 
 import excessoes.DataIndisponivel;
 import excessoes.MedicoDesativado;
-import excessoes.ProntuarioJaExistente;
 import excessoes.UsuarioJaExistente;
 import sistema.documentos.Atestado;
 import sistema.documentos.DocumentoMedico;
@@ -11,8 +10,6 @@ import sistema.documentos.Receita;
 import usuario.*;
 import usuario.Medico.HorarioExpediente;
 import usuario.userDB.RepositorioDeUsuario;
-import utilitarios.*;
-import utilitarios.Medicamento;
 
 import java.util.*;
 import java.time.*;

@@ -2,10 +2,7 @@ package sistema.documentos;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import usuario.Paciente;
-import usuario.Medico;
 
-import java.awt.*;
 import java.time.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "tipoDocumento")

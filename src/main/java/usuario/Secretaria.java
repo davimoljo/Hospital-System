@@ -1,8 +1,6 @@
 package usuario;
 
-import sistema.Consulta;
 import sistema.Hospital;
-import utilitarios.*;
 
 import java.time.*;
 

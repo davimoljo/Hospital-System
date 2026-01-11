@@ -1,7 +1,6 @@
 package sistema.documentos;
 
 import utilitarios.*;
-import usuario.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

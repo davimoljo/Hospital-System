@@ -1,7 +1,5 @@
 package sistema.documentos;
 
-import usuario.*;
-
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -59,9 +57,9 @@ public class Atestado extends DocumentoMedico {
                 .formatted(
                         nomePaciente,
                         cpfPaciente,
-                        dataCriacao.toString(),
+                        dataFormatada,
                         qtdDiasDeAfastamento,
-                        dataCriacao.toString(),
+                        dataFormatada,
                         nomeMedico,
                         cpfMedico);
         return conteudo;

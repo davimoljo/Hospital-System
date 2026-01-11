@@ -1,7 +1,6 @@
 package usuario;
 
 import sistema.Consulta;
-import sistema.Hospital;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -166,6 +165,10 @@ public class Medico extends Usuario {
 
     public void setDuracaoDasConsultas(int d) {
         duracaoDasConsultas = d;
+    }
+
+    public void setEspecialidade(Especialidade especialidade) {
+        this.especialidade = especialidade;
     }
 
     public boolean isHorarioLivre(LocalDate data, LocalTime hora) {

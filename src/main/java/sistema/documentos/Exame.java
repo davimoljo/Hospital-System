@@ -1,7 +1,5 @@
 package sistema.documentos;
 
-import usuario.*;
-
 import java.time.LocalDate;
 
 public class Exame extends DocumentoMedico {

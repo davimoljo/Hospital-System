@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import excessoes.UsuarioInexistente;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,15 @@ public class RepositorioDeUsuario {
     public static List<Usuario> carregarUsuarios() {
         try {
             if (!FILE.exists()) {
+                if (FILE.getParentFile() != null) {
+                    FILE.getParentFile().mkdirs();
+                }
+                FILE.createNewFile();
+                try (FileWriter writer = new FileWriter(FILE)) {
+                    writer.write("[]");
+                } catch (IOException e) {
+                    System.err.println("Erro ao criar arquivo no banco de dados.");
+                }
                 return new ArrayList<>();
             }
 

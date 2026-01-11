@@ -1,8 +1,6 @@
 package sistema;
 
-import usuario.*;
 import utilitarios.*;
-import java.util.*;
 
 public class Prontuario {
     private String nomePaciente;

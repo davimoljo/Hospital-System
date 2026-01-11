@@ -4,7 +4,6 @@ package usuario;
 ///
 
 import sistema.Prontuario;
-import sistema.StatusDoenca;
 import excessoes.*;
 import sistema.Consulta;
 import sistema.documentos.DocumentoMedico;
@@ -23,12 +22,16 @@ public class Paciente extends Usuario {
 
     public Paciente(String nome, String cpf, String senha, String email, String convenio) {
         super(nome, cpf, senha, email);
+
+        if (nome == null || cpf == null || senha == null || email == null || convenio == null)
+            throw new IllegalArgumentException("Nenhum argumento pode ser nulo na criação de usuário");
+
         this.convenio = convenio;
         tipo = TipoUsuario.PACIENTE;
         prontuario = null;
         consultasMarcadas = new ArrayList<>();
-        consultasAnteriores  = new ArrayList<>();
-        documentos  = new ArrayList<>();
+        consultasAnteriores = new ArrayList<>();
+        documentos = new ArrayList<>();
         internado = false;
         aptoAVisitas = false;
     }
@@ -70,7 +73,7 @@ public class Paciente extends Usuario {
         consultasMarcadas.add(consulta);
     }
 
-    public void removerConsulta(Consulta consulta){
+    public void removerConsulta(Consulta consulta) {
         consultasMarcadas.remove(consulta);
     }
 
@@ -114,7 +117,7 @@ public class Paciente extends Usuario {
         this.documentos = documentos;
     }
 
-    public void addDocumento(DocumentoMedico documentoMedico){
+    public void addDocumento(DocumentoMedico documentoMedico) {
         this.documentos.add(documentoMedico);
     }
 }

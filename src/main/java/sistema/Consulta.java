@@ -1,14 +1,9 @@
 package sistema;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import usuario.*;
+import utilitarios.StatusDoenca;
 
 import java.time.*;
 
@@ -105,7 +100,8 @@ public class Consulta {
         return prontuario;
     }
 
-    public boolean consultaJaRealizada(){
-        return LocalDate.now().isAfter(this.marcacao) || (LocalDate.now().isEqual(this.marcacao) && LocalTime.now().isAfter(this.hora));
+    public boolean consultaJaRealizada() {
+        return LocalDate.now().isAfter(this.marcacao)
+                || (LocalDate.now().isEqual(this.marcacao) && LocalTime.now().isAfter(this.hora));
     }
 }

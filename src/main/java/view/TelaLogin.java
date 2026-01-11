@@ -6,7 +6,6 @@ import view.eventos.abrirTelaCadastro;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class TelaLogin extends JFrame {
     private JTextField campoCPF;

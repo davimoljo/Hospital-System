@@ -36,7 +36,6 @@ public class SecretariaService {
 
             // Se tudo estiver certo, manda o hospital realizar o agendamento
             hospital.marcarConsulta(paciente, medico, data, hora);
-            // TODO: Tratar excessões
 
             return "Agendamento realizado para " + data + " às " + hora + " com Dr. " + medico.getNome();
 
