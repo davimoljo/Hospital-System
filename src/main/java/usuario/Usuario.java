@@ -1,19 +1,22 @@
 package usuario;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import sistema.Hospital;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "tipoUsuario" // O nome do campo que aparecerá no JSON
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "tipoUsuario" // O nome do
+                                                                                                       // campo que
+                                                                                                       // aparecerá no
+                                                                                                       // JSON
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Medico.class, name = "MEDICO"),
         @JsonSubTypes.Type(value = Paciente.class, name = "PACIENTE"),
         @JsonSubTypes.Type(value = Secretaria.class, name = "SECRETARIA")
 })
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 
 public abstract class Usuario {
     protected String nome;
@@ -31,7 +34,8 @@ public abstract class Usuario {
         this.email = email;
     }
 
-    public Usuario(){}
+    public Usuario() {
+    }
 
     private void validarDados(String nome, String cpf, String senha) {
         if (nome == null || nome.trim().length() <= 1) {
@@ -89,7 +93,7 @@ public abstract class Usuario {
         return this.tipo;
     }
 
-    public boolean equals(Usuario usuario){
+    public boolean equals(Usuario usuario) {
         return this.getCpf().equals(usuario.getCpf());
     }
 

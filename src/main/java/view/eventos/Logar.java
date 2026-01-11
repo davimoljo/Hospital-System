@@ -12,6 +12,7 @@ import usuario.*;
 import usuario.validacoes.*;
 import view.*;
 import view.telasDeUsuario.medico.TelaMedico;
+import view.telasDeUsuario.recepcionista.TelaRecepcionista;
 import view.telasDeUsuario.telaPaciente.TelaPaciente;
 
 public class Logar implements ActionListener {
@@ -61,6 +62,9 @@ public class Logar implements ActionListener {
 
                 else if (usuarioLogado instanceof Secretaria secretaria) {
                     // TODO: Criar tela da secretaria
+                    TelaRecepcionista telaRecepcionista = new TelaRecepcionista(hospital);
+                    telaLogin.setVisible(false);
+                    telaRecepcionista.setVisible(true);
                 }
 
             } catch (SenhaIncorretaException error) {

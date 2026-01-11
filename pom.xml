@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release> <exec.mainClass>br.ufjf.dcc025.hospital.Main</exec.mainClass>
+        <maven.compiler.release>17</maven.compiler.release> <exec.mainClass>programa.Main</exec.mainClass>
     </properties>
 
     <dependencies>
@@ -61,7 +61,7 @@
                         <archive>
                             <manifest>
                                 <addClasspath>true</addClasspath>
-                                <mainClass>br.ufjf.dcc025.hospital.Main</mainClass>
+                                <mainClass>programa.Main</mainClass>
                             </manifest>
                         </archive>
                     </configuration>

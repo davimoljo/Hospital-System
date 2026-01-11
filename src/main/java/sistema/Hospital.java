@@ -6,8 +6,10 @@ import excessoes.ProntuarioJaExistente;
 import excessoes.UsuarioJaExistente;
 import sistema.documentos.Atestado;
 import sistema.documentos.DocumentoMedico;
+import sistema.documentos.Exame;
 import sistema.documentos.Receita;
 import usuario.*;
+import usuario.Medico.HorarioExpediente;
 import usuario.userDB.RepositorioDeUsuario;
 import utilitarios.*;
 import utilitarios.Medicamento;
@@ -72,11 +74,11 @@ public class Hospital {
     }
 
     public void cadastrarMedico(String nome, String cpf, String senha, String email, String crm,
-            Especialidade especialidade, LocalTime inicioExpediente, LocalTime fimExpediente) {
+            Especialidade especialidade, Map<DayOfWeek, HorarioExpediente> expediente, int duracaoDasConsultas) {
         if (usuarioExiste(cpf)) {
             throw new UsuarioJaExistente("Usuário com cpf " + cpf + " já existe");
         }
-        cadastrarUsuario(new Medico(nome, cpf, senha, email, crm, especialidade, inicioExpediente, fimExpediente));
+        cadastrarUsuario(new Medico(nome, cpf, senha, email, crm, especialidade, expediente, duracaoDasConsultas));
     }
 
     public void cadastrarPaciente(String nome, String cpf, String senha, String email, String convenio) {
@@ -112,6 +114,14 @@ public class Hospital {
         return null;
     }
 
+    public Medico buscarMedicoPorCRM(String crm) {
+        for (Usuario u : usuarios) {
+            if (u.getCpf().equals(crm) && u instanceof Paciente)
+                return (Medico) u;
+        }
+        return null;
+    }
+
     public Usuario procurarUsuarioPorCPF(String cpf) {
         for (Usuario usuario : usuarios) {
             if (usuario.getCpf().equals(cpf)) {
@@ -127,10 +137,16 @@ public class Hospital {
         return atestado;
     }
 
-    public DocumentoMedico gerarRececita(Paciente p, Medico m, List<Medicamento> medicamentos) {
+    public DocumentoMedico gerarReceita(Paciente p, Medico m, List<Medicamento> medicamentos) {
         DocumentoMedico receita = new Receita(p, m);
         documentos.add(receita);
         return receita;
+    }
+
+    public DocumentoMedico gerarExame(Paciente p, Medico m, String resultado) {
+        DocumentoMedico exame = new Exame(p, m, resultado);
+        documentos.add(exame);
+        return exame;
     }
 
     public Consulta marcarConsulta(Paciente p, Medico m, LocalDate marcacao, LocalTime hora)
@@ -139,7 +155,7 @@ public class Hospital {
         if (!m.isAtivo())
             throw new MedicoDesativado("O doutor " + m.getNome() + " não está mais disponível");
 
-        if (!m.dentroDoExpediente(hora))
+        if (!m.dentroDoExpediente(hora, marcacao.getDayOfWeek()))
             throw new DataIndisponivel();
 
         Consulta consulta = new Consulta(p.getNome(), m.getNome(), p.getCpf(), m.getCpf(), marcacao, hora,
@@ -183,5 +199,11 @@ public class Hospital {
 
     public List<Usuario> getUsuarios() {
         return usuarios;
+    }
+
+    public List<Consulta> getConsultas() {
+        List<Consulta> c = new ArrayList<>(consultasMarcadas);
+        return c;
+
     }
 }

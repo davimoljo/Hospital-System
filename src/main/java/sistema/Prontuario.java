@@ -10,6 +10,10 @@ public class Prontuario {
     private String doenca;
     private StatusDoenca status;
 
+    public Prontuario() {
+
+    }
+
     public Prontuario(String nomePaciente, String cpfPaciente, String doenca, StatusDoenca status) {
         this.nomePaciente = nomePaciente;
         this.cpfPaciente = cpfPaciente;
@@ -21,27 +25,31 @@ public class Prontuario {
         return nomePaciente;
     }
 
-    public String getCpfPaciente(){
+    public String getCpfPaciente() {
         return cpfPaciente;
     }
 
-    public String getDoenca() {return doenca;}
+    public String getDoenca() {
+        return doenca;
+    }
 
-    public StatusDoenca getStatus() {return status;}
+    public StatusDoenca getStatus() {
+        return status;
+    }
 
     @Override
     public String toString() {
         return ("""
                 Prontuário de: %s
-                
+
                 Doença: %s
-                
+
                 Condição: %s
                 """
                 .formatted(nomePaciente, doenca, status.toString()));
     }
 
-    public void setStatus(StatusDoenca status){
+    public void setStatus(StatusDoenca status) {
         this.status = status;
     }
 }

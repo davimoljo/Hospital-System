@@ -20,9 +20,8 @@ public class RegistraDocumento {
             .addModule(new JavaTimeModule())
             .build();
 
-    public static void registrarConsultas (List<Consulta> consultas){
+    public static void registrarConsultas(List<Consulta> consultas) {
         File file = new File("src/main/java/sistema/docsDB/consultaDB.json");
-
 
         if (file.getParentFile() != null) {
             file.getParentFile().mkdirs();
@@ -36,9 +35,8 @@ public class RegistraDocumento {
         }
     }
 
-    public static void registrarProntuarios (List<Prontuario>  prontuarios){
+    public static void registrarProntuarios(List<Prontuario> prontuarios) {
         File file = new File("src/main/java/sistema/docsDB/prontuarioDB.json");
-
 
         if (file.getParentFile() != null) {
             file.getParentFile().mkdirs();
@@ -52,22 +50,23 @@ public class RegistraDocumento {
         }
     }
 
-    public static void registrarDocumentos (List<DocumentoMedico> documentos){
+    public static void registrarDocumentos(List<DocumentoMedico> documentos) {
         File file = new File("src/main/java/sistema/docsDB/documentosDB.json");
-
 
         if (file.getParentFile() != null) {
             file.getParentFile().mkdirs();
         }
 
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(file, documentos);
+            mapper.writerFor(new TypeReference<List<DocumentoMedico>>() {
+            })
+                    .withDefaultPrettyPrinter()
+                    .writeValue(file, documentos);
 
         } catch (IOException e) {
             throw new RuntimeException("Erro ao manipular o arquivo de documentos: " + e.getMessage(), e);
         }
     }
-
 
     private static <T> List<T> lerEntidades(String caminho, TypeReference<List<T>> typeRef) {
         File file = new File(caminho);
@@ -83,24 +82,27 @@ public class RegistraDocumento {
         }
     }
 
-    public static List<Consulta> leConsultas(){
+    public static List<Consulta> leConsultas() {
         try {
             return lerEntidades("src/main/java/sistema/docsDB/consultaDB.json", new TypeReference<List<Consulta>>() {
             });
-        }catch (RuntimeException e){
-            System.out.println("Erro ao ler o arquivo de consultas: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao ler o arquivo de consultas: " + e.getMessage() + "\n"
+                    + Arrays.toString(e.getStackTrace()));
             System.exit(1);
         }
         return null;
     }
 
-    public static List<Prontuario> leProntuarios(){
-        return lerEntidades("src/main/java/sistema/docsDB/prontuarioDB.json", new TypeReference<List<Prontuario>>() {});
+    public static List<Prontuario> leProntuarios() {
+        return lerEntidades("src/main/java/sistema/docsDB/prontuarioDB.json", new TypeReference<List<Prontuario>>() {
+        });
     }
 
-    public static List<DocumentoMedico> leDocumentos(){
-        return lerEntidades("src/main/java/sistema/docsDB/documentosDB.json", new TypeReference<List<DocumentoMedico>>() {});
+    public static List<DocumentoMedico> leDocumentos() {
+        return lerEntidades("src/main/java/sistema/docsDB/documentosDB.json",
+                new TypeReference<List<DocumentoMedico>>() {
+                });
     }
 
 }
-

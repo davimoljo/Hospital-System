@@ -1,4 +1,5 @@
 package view.telasDeUsuario.telaPaciente;
+
 import usuario.*;
 import view.TelaLogin;
 
@@ -43,7 +44,7 @@ public class TelaPaciente extends JFrame {
 
         // ---- ABA GERENCIAR CONSULTAS ----
         JPanel abaConsultas = new JPanel(new BorderLayout());
-        String[] colunasConsultas = {"Data/Hora", "Médico", "Especialidade", "Status"};
+        String[] colunasConsultas = { "Data/Hora", "Médico", "Especialidade", "Status" };
         modelConsultas = new DefaultTableModel(colunasConsultas, 0);
         this.tabelaConsultas = new JTable(modelConsultas);
 
@@ -90,7 +91,7 @@ public class TelaPaciente extends JFrame {
         JPanel painelConsultas = new JPanel(new GridLayout());
         JPanel painelProntuario = new JPanel(new GridLayout());
 
-        //Painel Esquerdo
+        // Painel Esquerdo
         JPanel painelEsquerdo = new JPanel(new BorderLayout(5, 5));
         painelEsquerdo.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY), "Consultas Anteriores",
@@ -101,7 +102,7 @@ public class TelaPaciente extends JFrame {
         consultasAntList.setRowHeight(25); // Linhas mais altas para melhor leitura
         painelEsquerdo.add(new JScrollPane(consultasAntList), BorderLayout.CENTER);
 
-        //Painel Direito
+        // Painel Direito
         JPanel painelDireito = new JPanel(new BorderLayout(5, 5));
         painelDireito.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY), "Resumo do Prontuário",
@@ -114,12 +115,12 @@ public class TelaPaciente extends JFrame {
         txtPreviewProntuario.setBackground(new Color(252, 252, 252));
         painelDireito.add(new JScrollPane(txtPreviewProntuario), BorderLayout.CENTER);
 
-        //Divisor
+        // Divisor
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, painelEsquerdo, painelDireito);
         splitPane.setDividerLocation(500); // Posição inicial do divisor
         splitPane.setBorder(null);
 
-        //Rodapé
+        // Rodapé
         JButton botaoVisualizarProntuario = new JButton("Visualizar Prontuário");
         botaoVisualizarProntuario.setFont(new Font("Segoe UI", Font.BOLD, 13));
         botaoVisualizarProntuario.setEnabled(false);
@@ -134,12 +135,14 @@ public class TelaPaciente extends JFrame {
 
         // ---- ABA VISITAS (Para casos de internação) ----
         JPanel abaVisitas = new JPanel(new BorderLayout());
-        String[] colunasVisitas = {"Data", "Visitante", "Parentesco"};
+        String[] colunasVisitas = { "Data", "Visitante", "Parentesco" };
         DefaultTableModel modelVisitas = new DefaultTableModel(colunasVisitas, 0);
         JTable tabelaVisitas = new JTable(modelVisitas);
 
         abaVisitas.add(new JScrollPane(tabelaVisitas), BorderLayout.CENTER);
-        abaVisitas.add(new JLabel(" Registro de visitas recebidas durante o período de internação.", SwingConstants.CENTER), BorderLayout.NORTH);
+        abaVisitas.add(
+                new JLabel(" Registro de visitas recebidas durante o período de internação.", SwingConstants.CENTER),
+                BorderLayout.NORTH);
 
         // ===== ADD ABAS AO COMPONENTE PRINCIPAL =====
         abas.addTab("Gerenciar Consultas", abaConsultas);
@@ -174,28 +177,30 @@ public class TelaPaciente extends JFrame {
         add(abas, BorderLayout.CENTER);
     }
 
-    private void abrirTelaAgendar(){
+    private void abrirTelaAgendar() {
         TelaAgendar telaAgendar = new TelaAgendar(hospital, paciente, this);
         telaAgendar.setVisible(true);
         this.setVisible(false);
     }
 
-    private void cancelarConsulta(){
+    private void cancelarConsulta() {
         Consulta consulta = paciente.getConsultasMarcadas().get(tabelaConsultas.getSelectedRow());
         hospital.desmarcarConsulta(consulta);
         atualizarTabelaConsultas();
     }
 
-    protected void atualizarTabelaConsultas(){
+    protected void atualizarTabelaConsultas() {
         modelConsultas.setRowCount(0);
 
-        if (paciente.getConsultasMarcadas().isEmpty()){
+        if (paciente.getConsultasMarcadas().isEmpty()) {
             return;
         }
 
+        System.out.println("Qtd consultas marcadas: " + paciente.getConsultasMarcadas().size());
+
         hospital.organizarConsultasPorData(paciente.getConsultasMarcadas());
         for (Consulta c : paciente.getConsultasMarcadas()) {
-            modelConsultas.addRow(new Object[]{
+            modelConsultas.addRow(new Object[] {
                     c.getMarcacao().toString() + " || " + c.getHora().toString(),
                     c.getNomeMedico(),
                     c.getEspecialidade(),
@@ -204,10 +209,10 @@ public class TelaPaciente extends JFrame {
         }
     }
 
-    private void carregarConsultasAnteriores(DefaultTableModel modelConsultasAnt){
+    private void carregarConsultasAnteriores(DefaultTableModel modelConsultasAnt) {
         hospital.organizarConsultasPorData(paciente.getConsultasAnteriores());
         for (Consulta c : paciente.getConsultasAnteriores()) {
-            modelConsultasAnt.addRow(new Object[]{
+            modelConsultasAnt.addRow(new Object[] {
                     c.getMarcacao().toString() + " || " + c.getHora().toString(),
                     c.getNomeMedico(),
                     c.getEspecialidade(),

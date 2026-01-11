@@ -19,7 +19,8 @@ public class Exame extends DocumentoMedico {
                 Resultado: %s
                 Data: %s
                 """.formatted(this.getPacienteRelacionado().getNome(), this.getMedicoResponsavel().getNome(),
-                resultado, this.getData().toString());
+                resultado, this.getDataCriacao().toString());
 
     }
+
 }

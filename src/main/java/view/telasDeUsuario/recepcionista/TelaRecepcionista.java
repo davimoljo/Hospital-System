@@ -1,4 +1,4 @@
-package view;
+package view.telasDeUsuario.recepcionista;
 
 import sistema.Hospital;
 import usuario.Medico;
@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.time.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TelaRecepcionista extends JFrame {
 
@@ -88,27 +90,24 @@ public class TelaRecepcionista extends JFrame {
         return painelPrincipal;
     }
 
-    // Cria o formulário de gestão de médicos.
-    // Inclui campos de Horário exigidos pelo método cadastrarMedico do Hospital.
-
     private JPanel criarPainelGestaoMedicos() {
         JPanel painelPrincipal = new JPanel(new BorderLayout());
 
-        // Área de Cadastro (Superior)
-        JPanel painelCadastro = new JPanel(new GridLayout(7, 2, 5, 5));
+        JPanel painelCadastro = new JPanel(new GridLayout(8, 2, 5, 5));
         painelCadastro.setBorder(BorderFactory.createTitledBorder("Novo Médico"));
 
         JTextField txtNome = new JTextField();
         JTextField txtCpf = new JTextField();
         JTextField txtCrm = new JTextField();
         JComboBox<Especialidade> comboEspecialidade = new JComboBox<>(Especialidade.values());
-
-        // Novos campos para atender à assinatura do método no Hospital
         JTextField txtInicio = new JTextField("08:00");
         JTextField txtFim = new JTextField("18:00");
 
+        JTextField txtDuracao = new JTextField("30");
+
         JButton btnCadastrar = new JButton("Cadastrar Médico");
 
+        // Adicionando componentes na ordem correta
         painelCadastro.add(new JLabel("Nome:"));
         painelCadastro.add(txtNome);
         painelCadastro.add(new JLabel("CPF:"));
@@ -121,42 +120,72 @@ public class TelaRecepcionista extends JFrame {
         painelCadastro.add(txtInicio);
         painelCadastro.add(new JLabel("Fim Expediente (HH:MM):"));
         painelCadastro.add(txtFim);
-        painelCadastro.add(new JLabel(""));
+
+        painelCadastro.add(new JLabel("Duração consulta (min):"));
+        painelCadastro.add(txtDuracao);
+
+        painelCadastro.add(new JLabel("")); // Espaço vazio para alinhar o botão
         painelCadastro.add(btnCadastrar);
 
         btnCadastrar.addActionListener(e -> {
             try {
-                // Parse manual das horas (Formato HH:MM)
+                // Validação simples antes de tentar ler
+                if (txtDuracao.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Informe a duração da consulta.");
+                    return;
+                }
+
                 String[] partesInicio = txtInicio.getText().split(":");
                 String[] partesFim = txtFim.getText().split(":");
 
                 LocalTime hInicio = LocalTime.of(Integer.parseInt(partesInicio[0]), Integer.parseInt(partesInicio[1]));
                 LocalTime hFim = LocalTime.of(Integer.parseInt(partesFim[0]), Integer.parseInt(partesFim[1]));
 
-                // Chamada com os 8 argumentos obrigatórios
+                Map<DayOfWeek, Medico.HorarioExpediente> mapaExpediente = new HashMap<>();
+                Medico.HorarioExpediente horarioPadrao = new Medico.HorarioExpediente(hInicio, hFim);
+
+                // Define dias úteis
+                mapaExpediente.put(DayOfWeek.MONDAY, horarioPadrao);
+                mapaExpediente.put(DayOfWeek.TUESDAY, horarioPadrao);
+                mapaExpediente.put(DayOfWeek.WEDNESDAY, horarioPadrao);
+                mapaExpediente.put(DayOfWeek.THURSDAY, horarioPadrao);
+                mapaExpediente.put(DayOfWeek.FRIDAY, horarioPadrao);
+
+                int duracao = Integer.parseInt(txtDuracao.getText());
+
                 hospital.cadastrarMedico(
-                        txtNome.getText(), txtCpf.getText(),
-                        "senha123", "medico@hospital.com", // Dados padrão
+                        txtNome.getText(),
+                        txtCpf.getText(),
+                        "senha123",
+                        "medico@hospital.com", // Email padrão ou adicione campo
                         txtCrm.getText(),
                         (Especialidade) comboEspecialidade.getSelectedItem(),
-                        hInicio, hFim);
+                        mapaExpediente,
+                        duracao);
+
                 JOptionPane.showMessageDialog(null, "Médico cadastrado com sucesso.");
                 limparCampos(painelCadastro);
+
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
+                JOptionPane.showMessageDialog(null, "Erro: Verifique horários (HH:MM) e se a duração é um número.");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Erro: Verifique o formato das horas (HH:MM).");
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Erro ao cadastrar: " + ex.getMessage());
             }
         });
 
-        // Área de Status (Inferior)
+        // Parte inferior (Status) mantida igual
         JPanel painelStatus = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelStatus.setBorder(BorderFactory.createTitledBorder("Alterar Status"));
 
         JTextField txtBuscaCrm = new JTextField(15);
         JButton btnAlterarStatus = new JButton("Ativar/Desativar");
+        JButton btnEditar = new JButton("Editar informações do médico");
 
         painelStatus.add(new JLabel("CRM:"));
         painelStatus.add(txtBuscaCrm);
         painelStatus.add(btnAlterarStatus);
+        painelStatus.add(btnEditar);
 
         btnAlterarStatus.addActionListener(e -> {
             boolean encontrado = false;
@@ -174,12 +203,21 @@ public class TelaRecepcionista extends JFrame {
                 JOptionPane.showMessageDialog(null, "CRM não encontrado.");
         });
 
+        btnEditar.addActionListener(e -> {
+            Medico medico = hospital.buscarMedicoPorCRM(txtBuscaCrm.getText());
+            if (medico != null) {
+                TelaEditarMedico editar = new TelaEditarMedico(medico, hospital);
+                editar.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Médico não encontrado.");
+            }
+        });
+
         painelPrincipal.add(painelCadastro, BorderLayout.NORTH);
         painelPrincipal.add(painelStatus, BorderLayout.CENTER);
 
         return painelPrincipal;
     }
-
     // Interface de Agendamento.
     // Delega a validação e execução para o SecretariaService.
 

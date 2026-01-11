@@ -1,8 +1,5 @@
 package view.telasDeUsuario.telaPaciente;
 
-import excessoes.DataInvalida;
-import excessoes.HoraInvalida;
-import sistema.Consulta;
 import sistema.Hospital;
 import usuario.*;
 
@@ -13,7 +10,7 @@ import java.awt.event.*;
 import java.time.*;
 
 public class TelaAgendar extends JFrame {
-    private JTextField data, horario;
+    private JTextField data;
     private JComboBox<Especialidade> especialidadeModel;
     private DefaultListModel<Medico> modelMedico = new DefaultListModel<Medico>();
     private JList<Medico> listaMedicosDisponiveis;
@@ -23,8 +20,8 @@ public class TelaAgendar extends JFrame {
     private Hospital hospital;
     private Paciente paciente;
     private TelaPaciente telaPaciente;
+    private JComboBox<LocalTime> comboHorarios;
     LocalDate d;
-    LocalTime h;
 
     public TelaAgendar(Hospital hospital, Paciente paciente, TelaPaciente telaPaciente) {
         this.hospital = hospital;
@@ -35,6 +32,8 @@ public class TelaAgendar extends JFrame {
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(telaPaciente);
+        comboHorarios = new JComboBox<>();
+        comboHorarios.setEnabled(false);
 
         // Cores e Fontes (seguindo o padrão da TelaPaciente)
         Color corFundo = new Color(245, 245, 245);
@@ -51,7 +50,6 @@ public class TelaAgendar extends JFrame {
         gbc.gridx = 0;
 
         data = new JTextField(10);
-        horario = new JTextField(10);
         especialidadeModel = new JComboBox<>(Especialidade.values());
 
         // Adicionando componentes com Labels
@@ -59,10 +57,6 @@ public class TelaAgendar extends JFrame {
         painelEsquerdo.add(new JLabel("Data (AAAA/MM/DD):"), gbc);
         gbc.gridy = 1;
         painelEsquerdo.add(data, gbc);
-        gbc.gridy = 2;
-        painelEsquerdo.add(new JLabel("Horário (HH:MM):"), gbc);
-        gbc.gridy = 3;
-        painelEsquerdo.add(horario, gbc);
         gbc.gridy = 4;
         painelEsquerdo.add(new JLabel("Especialidade:"), gbc);
         gbc.gridy = 5;
@@ -81,6 +75,13 @@ public class TelaAgendar extends JFrame {
         listaMedicosDisponiveis = new JList<>(modelMedico);
         modelMedico.clear();
         listaMedicosDisponiveis.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listaMedicosDisponiveis.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && !listaMedicosDisponiveis.isSelectionEmpty()) {
+                Medico medicoSelecionado = listaMedicosDisponiveis.getSelectedValue();
+                atualizarHorariosDisponiveis(medicoSelecionado);
+
+            }
+        });
         JScrollPane scrollMedicos = new JScrollPane(listaMedicosDisponiveis);
         painelDireito.add(scrollMedicos, BorderLayout.CENTER);
 
@@ -108,6 +109,11 @@ public class TelaAgendar extends JFrame {
         this.add(painelCentral, BorderLayout.CENTER);
         this.add(painelBotoes, BorderLayout.SOUTH);
 
+        JPanel painelHorario = new JPanel(new BorderLayout());
+        painelHorario.add(new JLabel("Horários Disponíveis:"), BorderLayout.NORTH);
+        painelHorario.add(comboHorarios, BorderLayout.CENTER);
+        painelDireito.add(painelHorario, BorderLayout.SOUTH);
+
         // Listener para fechar
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -127,14 +133,16 @@ public class TelaAgendar extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             modelMedico.clear();
+            comboHorarios.removeAllItems(); // LIMPEZA: Limpa os horários antigos se houver
+
             String[] dataF = data.getText().split("/");
-            String[] horarioF = horario.getText().split(":");
             Integer[] dataI = new Integer[3];
-            Integer[] horarioI = new Integer[2];
             Especialidade esp = (Especialidade) especialidadeModel.getSelectedItem();
-            if (dataF.length != 3 && horarioF.length != 2) {
-                JOptionPane.showMessageDialog(telaAgendar, "Formato Data/Hora inválido", "Erro de formato",
+
+            if (dataF.length != 3) {
+                JOptionPane.showMessageDialog(telaAgendar, "Formato Data inválido", "Erro de formato",
                         JOptionPane.ERROR_MESSAGE);
+                return; // IMPORTANTE: Adicione return para parar se der erro
             }
             try {
                 int i = 0;
@@ -142,33 +150,40 @@ public class TelaAgendar extends JFrame {
                     dataI[i++] = Integer.parseInt(s);
                 }
                 i = 0;
-                for (String s : horarioF) {
-                    horarioI[i++] = Integer.parseInt(s);
-                }
             } catch (NumberFormatException | IndexOutOfBoundsException ex) {
-                JOptionPane.showMessageDialog(telaAgendar, "Data/Hora inválido", "Erro de formato",
+                JOptionPane.showMessageDialog(telaAgendar, "Data inválida", "Erro de formato",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try {
-                h = LocalTime.of(horarioI[0], horarioI[1]);
+                // Atualizamos a variável global 'd' aqui
                 d = LocalDate.of(dataI[0], dataI[1], dataI[2]);
-                if (LocalDate.now().isAfter(d) || (LocalDate.now().isEqual(d)) && LocalTime.now().isAfter(h)) {
-                    JOptionPane.showMessageDialog(telaAgendar, "Impossível marcar uma consulta no passado!", "Erro", JOptionPane.ERROR_MESSAGE);
+
+                // CORREÇÃO: Removi o "isEqual(d)". Se for igual a hoje, DEVE permitir (para
+                // marcar pro final do dia)
+                if (LocalDate.now().isAfter(d)) {
+                    JOptionPane.showMessageDialog(telaAgendar, "Impossível marcar uma consulta no passado!", "Erro",
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-            } catch (HoraInvalida | DataInvalida| DateTimeException invalida) {
-                JOptionPane.showMessageDialog(telaAgendar, invalida.getMessage(), "Erro de formato",
+            } catch (DateTimeException invalida) { // Removi HoraInvalida/DataInvalida pois são do Java Time
+                JOptionPane.showMessageDialog(telaAgendar, "Data inválida", "Erro de formato",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
             for (Usuario usuario : hospital.getUsuarios()) {
                 if (usuario instanceof Medico medico) {
-                    if (medico.getEspecialidade().equals(esp) && medico.isDisponivel(h, d)) {
+                    if (medico.getEspecialidade().equals(esp) &&
+                            medico.getHoraInicioExpediente(d.getDayOfWeek()) != null) {
+
                         modelMedico.addElement(medico);
                     }
                 }
+            }
+
+            // Dica visual se não achar ninguém
+            if (modelMedico.isEmpty()) {
+                JOptionPane.showMessageDialog(telaAgendar, "Nenhum médico atende nesta data/especialidade.");
             }
         }
     }
@@ -182,16 +197,58 @@ public class TelaAgendar extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!listaMedicosDisponiveis.isSelectionEmpty()) {
-                Medico medico = listaMedicosDisponiveis.getSelectedValue();
-                Consulta consulta = hospital.marcarConsulta(paciente, medico, d, h);
-                JOptionPane.showMessageDialog(this.telaAgendar, "Consulta marcada com sucesso!", "Consulta marcada",
+            if (listaMedicosDisponiveis.isSelectionEmpty()) {
+                JOptionPane.showMessageDialog(telaAgendar, "Selecione um médico!");
+                return;
+            }
+
+            LocalTime horaSelecionada = (LocalTime) comboHorarios.getSelectedItem();
+
+            if (horaSelecionada == null) {
+                JOptionPane.showMessageDialog(telaAgendar, "Selecione um horário disponível!");
+                return;
+            }
+
+            Medico medico = listaMedicosDisponiveis.getSelectedValue();
+
+            try {
+                // Marca a consulta usando 'd' e 'horaSelecionada'
+                hospital.marcarConsulta(paciente, medico, d, horaSelecionada);
+
+                JOptionPane.showMessageDialog(telaAgendar, "Consulta marcada com sucesso!", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
-                telaAgendar.setVisible(false);
-                telaAgendar.telaPaciente.setVisible(true);
-                telaAgendar.telaPaciente.atualizarTabelaConsultas();
+
+                telaAgendar.dispose();
+                telaPaciente.atualizarTabelaConsultas();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(telaAgendar, "Erro: " + ex.getMessage());
             }
         }
+    }
+
+    private void atualizarHorariosDisponiveis(Medico medico) {
+        comboHorarios.removeAllItems();
+        LocalTime inicioExpediente = medico.getHoraInicioExpediente(d);
+        LocalTime fimExpediente = medico.getHoraFimExpediente(d);
+
+        if (inicioExpediente == null || fimExpediente == null) {
+            return;
+        }
+
+        int duracaoConsulta = medico.getDuracaoDasConsultas();
+        LocalTime horarioLoopAtual = inicioExpediente;
+
+        while (horarioLoopAtual.isBefore(fimExpediente)) {
+            boolean jaPassou = d.equals(LocalDate.now()) && horarioLoopAtual.isBefore(LocalTime.now());
+            if (!jaPassou)
+                if (medico.isHorarioLivre(d, horarioLoopAtual)) {
+                    comboHorarios.addItem(horarioLoopAtual);
+                }
+
+            horarioLoopAtual = horarioLoopAtual.plusMinutes(duracaoConsulta);
+        }
+        comboHorarios.setEnabled(comboHorarios.getItemCount() > 0);
     }
 
 }

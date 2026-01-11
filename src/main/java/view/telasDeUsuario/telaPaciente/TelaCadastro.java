@@ -4,6 +4,7 @@ import excessoes.HoraInvalida;
 import excessoes.UsuarioJaExistente;
 import sistema.Hospital;
 import usuario.Especialidade;
+import usuario.Medico;
 import usuario.TipoUsuario;
 
 import javax.swing.*;
@@ -11,6 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 import java.time.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TelaCadastro extends JFrame {
     Hospital hospital;
@@ -31,6 +34,7 @@ public class TelaCadastro extends JFrame {
     private JTextField inicioExpediente = new JTextField();
     private JTextField fimExpediente = new JTextField();
     private JComboBox<Especialidade> comboEspec = new JComboBox<>(Especialidade.values());
+    private JTextField txtDuracao = new JTextField();
     TipoUsuario tipoSelecionado;
     JButton salvar;
 
@@ -43,35 +47,66 @@ public class TelaCadastro extends JFrame {
             String senha = txtSenha.getText();
             String email = txtEmail.getText();
 
+            // 1. Validação básica
             if (nome.isEmpty() || cpf.isEmpty() || senha.isEmpty() || email.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos básicos!");
                 return;
             }
-            if (senha.length() <= 3 || cpf.length() != 11) {
+            if (senha.length() < 4 || cpf.length() != 11) {
                 JOptionPane.showMessageDialog(this, "Senha deve ter no mínimo 4 digitos e CPF deve ter 11 dígitos!");
                 return;
             }
+
             try {
+                // 2. Lógica separada por tipo
                 if (tipoSelecionado.equals(TipoUsuario.MEDICO)) {
+
+                    // --- VALIDAÇÕES E LEITURAS EXCLUSIVAS DE MÉDICO ---
                     String crm = txtCRM.getText();
-                    if (crm.isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "CRM é obrigatório para Médicos!");
+                    String txtDuracaoStr = txtDuracao.getText();
+                    String txtInicio = inicioExpediente.getText();
+                    String txtFim = fimExpediente.getText();
+
+                    if (crm.isEmpty() || txtDuracaoStr.isEmpty() || txtInicio.isEmpty() || txtFim.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Para médicos, preencha CRM, Duração e Horários!");
                         return;
                     }
+
+                    // Agora é seguro converter, pois sabemos que não está vazio
+                    int duracaoDasConsultas = Integer.parseInt(txtDuracaoStr);
                     Especialidade esp = (Especialidade) comboEspec.getSelectedItem();
 
-                    String[] horaInicioF = inicioExpediente.getText().split(":");
-                    String[] horaFimF = fimExpediente.getText().split(":");
+                    // Tratamento seguro do horário
+                    if (!txtInicio.contains(":") || !txtFim.contains(":")) {
+                        JOptionPane.showMessageDialog(this, "Use o formato HH:MM para os horários (ex: 08:00)");
+                        return;
+                    }
+
+                    String[] horaInicioF = txtInicio.split(":");
+                    String[] horaFimF = txtFim.split(":");
+
                     int horaInicio = Integer.parseInt(horaInicioF[0]);
                     int minutoInicio = Integer.parseInt(horaInicioF[1]);
-
                     int horaFim = Integer.parseInt(horaFimF[0]);
                     int minutoFim = Integer.parseInt(horaFimF[1]);
 
                     LocalTime inicio = LocalTime.of(horaInicio, minutoInicio);
                     LocalTime fim = LocalTime.of(horaFim, minutoFim);
 
-                    hospital.cadastrarMedico(nome, cpf, senha, email, crm, esp, inicio, fim);
+                    Map<DayOfWeek, Medico.HorarioExpediente> mapaHorarios = new HashMap<>();
+                    Medico.HorarioExpediente horarioPadrao = new Medico.HorarioExpediente(inicio, fim); // Usa o
+                                                                                                        // construtor
+                                                                                                        // cheio
+
+                    // Adiciona dias úteis
+                    mapaHorarios.put(DayOfWeek.MONDAY, horarioPadrao);
+                    mapaHorarios.put(DayOfWeek.TUESDAY, horarioPadrao);
+                    mapaHorarios.put(DayOfWeek.WEDNESDAY, horarioPadrao);
+                    mapaHorarios.put(DayOfWeek.THURSDAY, horarioPadrao);
+                    mapaHorarios.put(DayOfWeek.FRIDAY, horarioPadrao);
+
+                    hospital.cadastrarMedico(nome, cpf, senha, email, crm, esp, mapaHorarios, duracaoDasConsultas);
+
                 } else if (tipoSelecionado.equals(TipoUsuario.PACIENTE)) {
                     String plano = txtPlano.getText();
                     if (plano.isEmpty()) {
@@ -79,6 +114,7 @@ public class TelaCadastro extends JFrame {
                         return;
                     }
                     hospital.cadastrarPaciente(nome, cpf, senha, email, plano);
+
                 } else if (tipoSelecionado.equals(TipoUsuario.SECRETARIA)) {
                     String matricula = txtMatricula.getText();
                     if (matricula.isEmpty()) {
@@ -88,17 +124,20 @@ public class TelaCadastro extends JFrame {
                     hospital.cadastrarSecretaria(nome, cpf, senha, email, matricula);
                 }
 
-                // SUCESSO: Se chegou aqui, não lançou exceção
                 JOptionPane.showMessageDialog(this, "Usuário cadastrado com sucesso!");
-                this.dispose(); // Fecha esta tela e aciona o WindowListener para abrir o Login
+                this.dispose();
 
             } catch (UsuarioJaExistente er) {
-                JOptionPane.showMessageDialog(this, er.getMessage(), "Erro de Cadastro", JOptionPane.WARNING_MESSAGE);
-
-            } catch (HoraInvalida | NumberFormatException er) {
-                JOptionPane.showMessageDialog(this, "Hora inválida", "Erro de Cadastro", JOptionPane.WARNING_MESSAGE);
-
+                JOptionPane.showMessageDialog(this, er.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
+            } catch (NumberFormatException er) {
+                JOptionPane.showMessageDialog(this,
+                        "Verifique se digitou números válidos nos campos de Duração ou Horário.", "Erro de Formato",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (DateTimeException | HoraInvalida er) {
+                JOptionPane.showMessageDialog(this, "Horário inválido (ex: 25:00 ou minutos > 59).", "Erro de Hora",
+                        JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
+                ex.printStackTrace(); // Ajuda a ver erros no console
                 JOptionPane.showMessageDialog(this, "Erro inesperado: " + ex.getMessage(), "Erro",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -168,6 +207,8 @@ public class TelaCadastro extends JFrame {
             painelFormulario.add(inicioExpediente);
             painelFormulario.add(new JLabel("Fim Expediente (HH:MM):"));
             painelFormulario.add(fimExpediente);
+            painelFormulario.add(new JLabel("Duração consulta (minutos): "));
+            painelFormulario.add(txtDuracao);
             tipoSelecionado = TipoUsuario.MEDICO;
         } else if (cadastrarPaciente.isSelected()) {
             painelFormulario.add(new JLabel("Plano de Saúde:"));

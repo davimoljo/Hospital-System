@@ -30,7 +30,7 @@ public class Receita extends DocumentoMedico {
 
                 """.formatted(
                 this.getPacienteRelacionado().getNome(),
-                this.getData().toString(),
+                this.getDataCriacao().toString(),
                 medicamentosStr.toString(),
                 observacoes);
         return conteudo;
@@ -43,4 +43,5 @@ public class Receita extends DocumentoMedico {
     public void adicionarMedicamento(Medicamento m) {
         medicamentos.add(m);
     }
+
 }
