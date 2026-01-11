@@ -423,7 +423,7 @@ public class TelaPaciente extends JFrame {
                 tipo = "Error";
             modelDocs.addRow(new Object[] {
                     tipo,
-                    documento.getData().toString(),
+                    documento.getDataCriacao(),
             });
         }
     }

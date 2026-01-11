@@ -2,7 +2,11 @@ package usuario;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MedicoTest {
@@ -11,29 +15,37 @@ class MedicoTest {
 
     @BeforeEach
     void setUp() {
-        // Médico trabalha das 08:00 às 18:00
+        Map<DayOfWeek, Medico.HorarioExpediente> expediente = new HashMap<>();
+        expediente.put(DayOfWeek.MONDAY, new Medico.HorarioExpediente(
+                LocalTime.of(8, 0),
+                LocalTime.of(18, 0)));
         medico = new Medico(
                 "Dr. House", "111.222.333-44", "senha", "email", "CRM123",
                 Especialidade.CARDIOLOGISTA,
-                LocalTime.of(8, 0), LocalTime.of(18, 0)
-        );
+                expediente,
+                30);
     }
 
     @Test
     void deveValidarHorarioDentroDoExpediente() {
-        // Exatamente no início
-        assertTrue(medico.dentroDoExpediente(LocalTime.of(8, 0)));
-        // No meio do dia
-        assertTrue(medico.dentroDoExpediente(LocalTime.of(12, 30)));
-        // Exatamente no fim
-        assertTrue(medico.dentroDoExpediente(LocalTime.of(18, 0)));
+
+        assertTrue(medico.dentroDoExpediente(LocalTime.of(8, 0), DayOfWeek.MONDAY));
+
+        assertTrue(medico.dentroDoExpediente(LocalTime.of(12, 30), DayOfWeek.MONDAY));
+
+        assertTrue(medico.dentroDoExpediente(LocalTime.of(17, 59), DayOfWeek.MONDAY));
     }
 
     @Test
-    void deveInvalidarHorarioForaDoExpediente() {
-        // Um minuto antes
-        assertFalse(medico.dentroDoExpediente(LocalTime.of(7, 59)));
-        // Um minuto depois
-        assertFalse(medico.dentroDoExpediente(LocalTime.of(18, 1)));
+    void deveInvalidarHorarioForaDoExpedienteNoMesmoDia() {
+        assertFalse(medico.dentroDoExpediente(LocalTime.of(7, 59), DayOfWeek.MONDAY));
+        assertFalse(medico.dentroDoExpediente(LocalTime.of(18, 0), DayOfWeek.MONDAY));
+
+        assertFalse(medico.dentroDoExpediente(LocalTime.of(18, 1), DayOfWeek.MONDAY));
+    }
+
+    @Test
+    void deveInvalidarHorarioEmDiaQueNaoTrabalha() {
+        assertFalse(medico.dentroDoExpediente(LocalTime.of(10, 0), DayOfWeek.TUESDAY));
     }
 }
