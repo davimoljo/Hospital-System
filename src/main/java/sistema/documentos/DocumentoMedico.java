@@ -33,6 +33,10 @@ public abstract class DocumentoMedico {
         this.dataCriacao = dataCriacao;
     }
 
+    public DocumentoMedico() {
+
+    }
+
     public String getId() {
         return id;
     }

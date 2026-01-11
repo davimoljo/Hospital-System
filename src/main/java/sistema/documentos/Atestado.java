@@ -17,6 +17,10 @@ public class Atestado extends DocumentoMedico {
         dataTermino = dataCriacao.plusDays(qtdDiasDeAfastamento);
     }
 
+    public Atestado() {
+        super();
+    }
+
     @Override
     public String gerarConteudo() {
         // 1. Configura a formatação da data para ficar "bonita" (DD/MM/AAAA)
@@ -65,5 +69,13 @@ public class Atestado extends DocumentoMedico {
 
     public LocalDate getDataTermino() {
         return dataTermino;
+    }
+
+    public String getPacienteRelacionado() {
+        return nomePaciente;
+    }
+
+    public void setPacienteRelacionado(String pacienteRelacionado) {
+        nomePaciente = pacienteRelacionado;
     }
 }
