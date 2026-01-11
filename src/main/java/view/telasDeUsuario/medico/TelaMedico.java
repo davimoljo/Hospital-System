@@ -491,8 +491,8 @@ public class TelaMedico extends JFrame {
         // ... (Lógica igual ao anterior, simplificada aqui por espaço)
         String dias = JOptionPane.showInputDialog("Quantos dias de atestado?");
         if (dias != null) {
-            //Atestado a = new Atestado(p, medico, LocalDate.now().plusDays(Integer.parseInt(dias)));
-            //JOptionPane.showMessageDialog(this, a.gerarConteudo());
+            Atestado a = new Atestado(p, medico, LocalDate.now().plusDays(Integer.parseInt(dias)));
+            JOptionPane.showMessageDialog(this, a.gerarConteudo());
         }
     }
 
@@ -500,16 +500,16 @@ public class TelaMedico extends JFrame {
         JTextArea txt = new JTextArea(5, 20);
         if (JOptionPane.showConfirmDialog(this, new JScrollPane(txt), "Medicamentos",
                 JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            //Receita r = new Receita(p, medico);
-            //r.adicionarMedicamento(new Medicamento(txt.getText()));
-            //JOptionPane.showMessageDialog(this, r.gerarConteudo());
+            Receita r = new Receita(p, medico);
+            r.adicionarMedicamento(new Medicamento(txt.getText()));
+            JOptionPane.showMessageDialog(this, r.gerarConteudo());
         }
     }
 
     private void emitirExame(Paciente p) {
         String res = JOptionPane.showInputDialog("Resultado:");
-        //if (res != null)
-            //JOptionPane.showMessageDialog(this, new Exame(p, medico, res).gerarConteudo());
+        if (res != null)
+            JOptionPane.showMessageDialog(this, new Exame(p, medico, res).gerarConteudo());
     }
 
     private void verificarNotificacoes() {
