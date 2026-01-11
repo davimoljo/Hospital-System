@@ -3,6 +3,7 @@ package sistema.documentos;
 import utilitarios.*;
 import usuario.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +11,10 @@ public class Receita extends DocumentoMedico {
     private List<Medicamento> medicamentos;
     private String observacoes;
 
-    public Receita(Paciente p, Medico m) {
-        super(p, m);
+    public Receita(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico, LocalDate dataCriacao,
+            String observacoes) {
+        super(nomePaciente, nomeMedico, cpfPaciente, cpfMedico, dataCriacao);
+        this.observacoes = observacoes;
         medicamentos = new ArrayList<>();
     }
 
@@ -29,8 +32,8 @@ public class Receita extends DocumentoMedico {
                 Observações: %s
 
                 """.formatted(
-                this.getPacienteRelacionado().getNome(),
-                this.getDataCriacao().toString(),
+                this.nomePaciente,
+                this.dataCriacao.toString(),
                 medicamentosStr.toString(),
                 observacoes);
         return conteudo;

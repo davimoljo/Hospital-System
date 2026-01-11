@@ -1,4 +1,3 @@
-package programa;
 import view.*;
 
 import javax.swing.*;

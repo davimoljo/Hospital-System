@@ -40,10 +40,10 @@
   "cpf" : "12345678901",
   "senha" : "12345",
   "email" : "joao@gmail.com",
-  "telefone" : null,
+  "telefone" : "",
   "tipo" : "PACIENTE",
-  "endereco" : null,
-  "convenio" : "Unimed",
+  "endereco" : "",
+  "convenio" : "Buddyson",
   "prontuario" : null,
   "consultasMarcadas" : [ {
     "marcacao" : [ 2026, 12, 1 ],

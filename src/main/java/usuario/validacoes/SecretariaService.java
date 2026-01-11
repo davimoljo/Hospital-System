@@ -75,7 +75,7 @@ public class SecretariaService {
             int dia = Integer.parseInt(partes[0]);
             int mes = Integer.parseInt(partes[1]);
             int ano = Integer.parseInt(partes[2]);
-            LocalDate data = LocalDate.of(dia, mes, ano);
+            LocalDate data = LocalDate.of(ano, mes, dia);
             return data;
         } catch (Exception e) {
             throw new IllegalArgumentException("Data inválida. Use o formato DD/MM/AAAA");

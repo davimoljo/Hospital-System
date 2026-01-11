@@ -2,11 +2,14 @@ package sistema.documentos;
 
 import usuario.*;
 
+import java.time.LocalDate;
+
 public class Exame extends DocumentoMedico {
     private String resultado;
 
-    public Exame(Paciente p, Medico m, String resultado) {
-        super(p, m);
+    public Exame(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico, LocalDate dataCriacao,
+            String resultado) {
+        super(nomePaciente, nomeMedico, cpfPaciente, cpfMedico, dataCriacao);
         this.resultado = resultado;
     }
 
@@ -18,8 +21,8 @@ public class Exame extends DocumentoMedico {
                 Médico: %s
                 Resultado: %s
                 Data: %s
-                """.formatted(this.getPacienteRelacionado().getNome(), this.getMedicoResponsavel().getNome(),
-                resultado, this.getDataCriacao().toString());
+                """.formatted(this.nomePaciente, this.nomeMedico,
+                resultado, dataCriacao.toString());
 
     }
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import usuario.Paciente;
 import usuario.Medico;
+
+import java.awt.*;
 import java.time.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "tipoDocumento")
@@ -15,21 +17,20 @@ import java.time.*;
 
 public abstract class DocumentoMedico {
     private String id;
-    protected Paciente pacienteRelacionado;
-    protected Medico medicoRelacionado;
     protected String conteudo;
+    protected String nomePaciente;
+    protected String nomeMedico;
+    protected String cpfPaciente;
+    protected String cpfMedico;
     protected LocalDate dataCriacao;
 
-    public DocumentoMedico() {
-
-    }
-
-    public DocumentoMedico(Paciente paciente, Medico medico) {
-        pacienteRelacionado = paciente;
-        medicoRelacionado = medico;
-        dataCriacao = LocalDate.now();
-        id = paciente.getCpf() + dataCriacao.toString();
-
+    public DocumentoMedico(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico,
+            LocalDate dataCriacao) {
+        this.nomePaciente = nomePaciente;
+        this.nomeMedico = nomeMedico;
+        this.cpfPaciente = cpfPaciente;
+        this.cpfMedico = cpfMedico;
+        this.dataCriacao = dataCriacao;
     }
 
     public String getId() {
@@ -38,18 +39,6 @@ public abstract class DocumentoMedico {
 
     public LocalDate getDataCriacao() {
         return dataCriacao;
-    }
-
-    public Medico getMedicoResponsavel() {
-        return medicoRelacionado;
-    }
-
-    public Paciente getPacienteRelacionado() {
-        return pacienteRelacionado;
-    }
-
-    public void setMedicoResponsavel(Medico m) {
-        medicoRelacionado = m;
     }
 
     public abstract String gerarConteudo();

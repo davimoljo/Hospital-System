@@ -8,14 +8,13 @@ import java.time.temporal.ChronoUnit;
 
 public class Atestado extends DocumentoMedico {
     private LocalDate dataTermino;
+    private int qtdDiasDeAfastamento;
 
-    public Atestado() {
-
-    }
-
-    public Atestado(Paciente paciente, Medico medico, LocalDate termino) {
-        super(paciente, medico);
-        dataTermino = termino;
+    public Atestado(String nomePaciente, String nomeMedico, String cpfPaciente, String cpfMedico, LocalDate dataCriacao,
+            int qtdDiasDeAfastamento) {
+        super(nomePaciente, nomeMedico, cpfPaciente, cpfMedico, dataCriacao);
+        this.qtdDiasDeAfastamento = qtdDiasDeAfastamento;
+        dataTermino = dataCriacao.plusDays(qtdDiasDeAfastamento);
     }
 
     @Override
@@ -46,7 +45,7 @@ public class Atestado extends DocumentoMedico {
                 por um período de %d dia(s), a contar desta data.
 
 
-                Local e data: Juiz de Fora, %s
+                Data: %s
 
                 Médico Responsável:
                 Nome: Dr(a). %s
@@ -54,15 +53,17 @@ public class Atestado extends DocumentoMedico {
                 Assinatura: ___________________________
                 """
                 .formatted(
-                        pacienteRelacionado.getNome(),
-                        pacienteRelacionado.getCpf(),
-                        dataFormatada,
-                        diasDeAfastamento,
-                        dataFormatada,
-                        medicoRelacionado.getNome(),
-                        medicoRelacionado.getCrm());
-
-        return this.conteudo;
+                        nomePaciente,
+                        cpfPaciente,
+                        dataCriacao.toString(),
+                        qtdDiasDeAfastamento,
+                        dataCriacao.toString(),
+                        nomeMedico,
+                        cpfMedico);
+        return conteudo;
     }
 
+    public LocalDate getDataTermino() {
+        return dataTermino;
+    }
 }

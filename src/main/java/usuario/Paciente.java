@@ -7,6 +7,8 @@ import sistema.Prontuario;
 import sistema.StatusDoenca;
 import excessoes.*;
 import sistema.Consulta;
+import sistema.documentos.DocumentoMedico;
+
 import java.util.*;
 
 public class Paciente extends Usuario {
@@ -15,6 +17,7 @@ public class Paciente extends Usuario {
     private Prontuario prontuario;
     private List<Consulta> consultasMarcadas;
     private List<Consulta> consultasAnteriores;
+    private List<DocumentoMedico> documentos;
     private boolean internado;
     private boolean aptoAVisitas;
 
@@ -25,6 +28,7 @@ public class Paciente extends Usuario {
         prontuario = null;
         consultasMarcadas = new ArrayList<>();
         consultasAnteriores  = new ArrayList<>();
+        documentos  = new ArrayList<>();
         internado = false;
         aptoAVisitas = false;
     }
@@ -100,5 +104,17 @@ public class Paciente extends Usuario {
 
     public void addConsultaAnterior(Consulta consultaAnterior) {
         this.consultasAnteriores.add(consultaAnterior);
+    }
+
+    public List<DocumentoMedico> getDocumentos() {
+        return documentos;
+    }
+
+    public void setDocumentos(List<DocumentoMedico> documentos) {
+        this.documentos = documentos;
+    }
+
+    public void addDocumento(DocumentoMedico documentoMedico){
+        this.documentos.add(documentoMedico);
     }
 }
