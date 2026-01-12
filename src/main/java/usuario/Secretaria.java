@@ -30,7 +30,6 @@ public class Secretaria extends Usuario {
     }
 
     public void marcarConsulta(Hospital hospital, Paciente p, Medico m, LocalDate d, LocalTime h) {
-        // Delega para o hospital, que é quem sabe as regras de agendamento
         hospital.marcarConsulta(p, m, d, h);
     }
 }

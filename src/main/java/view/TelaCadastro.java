@@ -58,10 +58,9 @@ public class TelaCadastro extends JFrame {
             }
 
             try {
-                // 2. Lógica separada por tipo
+                // Lógica separada por tipo
                 if (tipoSelecionado.equals(TipoUsuario.MEDICO)) {
 
-                    // --- VALIDAÇÕES E LEITURAS EXCLUSIVAS DE MÉDICO ---
                     String crm = txtCRM.getText();
                     String txtDuracaoStr = txtDuracao.getText();
                     String txtInicio = inicioExpediente.getText();
@@ -72,7 +71,6 @@ public class TelaCadastro extends JFrame {
                         return;
                     }
 
-                    // Agora é seguro converter, pois sabemos que não está vazio
                     int duracaoDasConsultas = Integer.parseInt(txtDuracaoStr);
                     Especialidade esp = (Especialidade) comboEspec.getSelectedItem();
 
@@ -152,7 +150,6 @@ public class TelaCadastro extends JFrame {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                // Quando esta tela fechar, a de login reaparece
                 telaLogin.setVisible(true);
             }
         });
@@ -184,7 +181,7 @@ public class TelaCadastro extends JFrame {
     }
 
     private void atualizarCampos() {
-        painelFormulario.removeAll(); // Limpa tudo o que tinha antes
+        painelFormulario.removeAll();
         painelFormulario.setLayout(new GridLayout(0, 2, 5, 5));
 
         // Campos Comuns a todos (Nome, CPF, Senha)
@@ -221,7 +218,7 @@ public class TelaCadastro extends JFrame {
         }
 
         // Adiciona botão no fim
-        painelFormulario.add(new JLabel("")); // Espaço vazio para alinhar
+        painelFormulario.add(new JLabel(""));
         painelFormulario.add(salvar);
 
         // Atualiza a interface gráfica
