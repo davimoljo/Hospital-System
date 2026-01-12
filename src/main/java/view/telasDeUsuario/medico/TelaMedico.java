@@ -49,7 +49,7 @@ public class TelaMedico extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // ===== TOPO =====
+        // TOPO
         JPanel topo = new JPanel(new BorderLayout());
         topo.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         topo.setBackground(new Color(240, 248, 255));
@@ -58,7 +58,7 @@ public class TelaMedico extends JFrame {
         lblMedico.setFont(new Font("Segoe UI", Font.BOLD, 18));
         topo.add(lblMedico, BorderLayout.WEST);
 
-        // ===== ABAS =====
+        // ABAS
         JTabbedPane abas = new JTabbedPane();
 
         JPanel abaAgenda = new JPanel(new BorderLayout());
