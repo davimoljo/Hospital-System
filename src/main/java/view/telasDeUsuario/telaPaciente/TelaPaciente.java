@@ -33,7 +33,7 @@ public class TelaPaciente extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // ===== TOPO =====
+        // TOPO
         JPanel topo = new JPanel(new BorderLayout());
         topo.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         topo.setBackground(new Color(245, 245, 245));
@@ -56,10 +56,10 @@ public class TelaPaciente extends JFrame {
         topo.add(lblInfo, BorderLayout.EAST);
         topo.add(configurarUsuario, BorderLayout.EAST);
 
-        // ===== ABAS =====
+        // ABAS
         JTabbedPane abas = new JTabbedPane();
 
-        // ---- ABA GERENCIAR CONSULTAS ----
+        // ABA GERENCIAR CONSULTAS
         JPanel abaConsultas = new JPanel(new BorderLayout());
         String[] colunasConsultas = { "Data/Hora", "Médico", "Especialidade", "Status" };
         modelConsultas = new DefaultTableModel(colunasConsultas, 0);
@@ -84,7 +84,7 @@ public class TelaPaciente extends JFrame {
         abaConsultas.add(new JScrollPane(tabelaConsultas), BorderLayout.CENTER);
         abaConsultas.add(painelBotoesConsultas, BorderLayout.SOUTH);
 
-        // ---- ABA DOCUMENTOS (Receitas e Atestados) ----
+        // ABA DOCUMENTOS (Receitas e Atestados)
         JPanel abaDocumentos = new JPanel(new BorderLayout(5, 5));
         abaDocumentos.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -141,7 +141,7 @@ public class TelaPaciente extends JFrame {
             }
         });
 
-        // ---- ABA HISTÓRICO ----
+        // ABA HISTÓRICO
         JPanel abaHistorico = new JPanel(new BorderLayout());
         abaHistorico.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -260,13 +260,13 @@ public class TelaPaciente extends JFrame {
                 new JLabel(" Registro de visitas recebidas durante o período de internação.", SwingConstants.CENTER),
                 BorderLayout.NORTH);
 
-        // ===== ADD ABAS AO COMPONENTE PRINCIPAL =====
+        // ADD ABAS AO COMPONENTE PRINCIPAL
         abas.addTab("Gerenciar Consultas", abaConsultas);
         abas.addTab("Documentos", abaDocumentos);
         abas.addTab("Histórico", abaHistorico);
         abas.addTab("Visitas", abaVisitas);
 
-        // ===== LISTENERS E LOGICA =====
+        // LISTENERS E LOGICA
         tabelaConsultas.getSelectionModel().addListSelectionListener(e -> {
             btnCancelar.setEnabled(tabelaConsultas.getSelectedRow() != -1);
         });
