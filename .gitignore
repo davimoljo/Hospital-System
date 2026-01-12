@@ -37,3 +37,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+src/main/java/usuario/userDB/userDatabase.json
+src/main/java/sistema/docsDB/consultaDB.json
+src/main/java/sistema/docsDB/documentosDB.json
+src/main/java/sistema/docsDB/prontuarioDB.json
